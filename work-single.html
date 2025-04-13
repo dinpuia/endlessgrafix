@@ -232,7 +232,6 @@
   const db = firebase.firestore();
     const params = new URLSearchParams(window.location.search);
 const projectId = params.get("id");
-
 db.collection("portfolio").doc(projectId).get().then(doc => {
   const data = doc.data();
   document.getElementById("title").innerText = data.title;
@@ -240,19 +239,6 @@ db.collection("portfolio").doc(projectId).get().then(doc => {
   document.getElementById("image").src = data.image;
 });
 
-
-  db.collection("portfolio").orderBy("timestamp", "desc").get().then((snapshot) => {
-    let html = '';
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      html += `
-        <div class="project">
-          <img src="${data.image}" alt="${data.title}" width="300">
-          <h3>${data.title}</h3>
-          <p>${data.description}</p>
-        </div>
-      `;
-    });
     document.getElementById("portfolio").innerHTML = html;
   });
 <section class="section-work-single section-padding">
