@@ -20,10 +20,10 @@
     }
     [data-theme="dark"] {
       --bg-color: #121212;
-      --text-color: #fff;
+      --text-color: #ffffff;
       --card-bg: #1e1e1e;
-      --sidebar-bg: #000;
-      --sidebar-text: #ddd;
+      --sidebar-bg: #000000;
+      --sidebar-text: #f0f0f0;
     }
     #sidebar {
       width: 250px;
@@ -34,14 +34,22 @@
       left: 0;
       padding-top: 30px;
       color: var(--sidebar-text);
-      transition: transform 0.3s ease;
+      transform: translateX(-100%);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
       z-index: 1040;
     }
-    #sidebar a {
+    #sidebar.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    #sidebar a, .theme-toggle {
       color: var(--sidebar-text);
       padding: 12px 20px;
       display: block;
       text-decoration: none;
+      font-size: 16px;
+      transition: background 0.2s ease;
     }
     #sidebar a:hover, #sidebar .active {
       background-color: #39373d;
@@ -56,6 +64,7 @@
       background-color: var(--card-bg);
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      color: var(--text-color);
     }
     .sidebar-toggle {
       display: none;
@@ -79,29 +88,24 @@
       cursor: pointer;
       display: none;
     }
-    .theme-toggle {
-      color: var(--sidebar-text);
-      background: none;
-      border: none;
-      display: block;
-      width: 100%;
-      text-align: left;
-      padding: 12px 20px;
-      cursor: pointer;
+    .theme-icon {
+      transition: transform 0.3s ease;
+    }
+    .theme-icon.spin {
+      transform: rotate(180deg);
     }
     @media (max-width: 768px) {
       #sidebar {
-        transform: translateX(-100%);
-      }
-      #sidebar.show {
-        transform: translateX(0);
+        width: 100%;
+        max-width: 280px;
+        padding-top: 20px;
       }
       #sidebar.show .close-btn {
         display: block;
       }
       .main-content {
         margin-left: 0;
-        padding: 70px 20px 20px 20px;
+        padding: 80px 20px 20px 20px;
       }
       .sidebar-toggle {
         display: block;
@@ -109,13 +113,26 @@
       .sidebar-toggle.hide {
         display: none;
       }
+      .card h5, .card p {
+        font-size: 1rem;
+      }
+      .card {
+        padding: 1rem;
+      }
+      .table-responsive {
+        overflow-x: auto;
+      }
+      .table {
+        font-size: 0.875rem;
+      }
     }
   </style>
 </head>
 <body>
   <div class="sidebar-toggle text-dark" id="menuToggle" onclick="toggleSidebar()">
     <i class="ri-menu-line"></i>
-  </div>  <div id="sidebar">
+  </div>
+  <div id="sidebar">
     <div class="close-btn" onclick="toggleSidebar()">
       <i class="ri-close-line"></i>
     </div>
@@ -127,11 +144,12 @@
     <a href="#"><i class="ri-article-line"></i> Blog</a>
     <a href="#"><i class="ri-mail-line"></i> Contact</a>
     <a href="#"><i class="ri-settings-3-line"></i> Settings</a>
-    <button class="theme-toggle" onclick="toggleTheme()">
-      <i class="ri-moon-clear-line me-2"></i> Toggle Theme
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeButton">
+      <i class="ri-moon-clear-line me-2 theme-icon"></i> Toggle Theme
     </button>
     <a href="#" onclick="logout()"><i class="ri-logout-box-line"></i> Logout</a>
-  </div>  <div class="main-content">
+  </div>
+  <div class="main-content">
     <h2 class="mb-4">Welcome back, Admin</h2>
     <div class="row mb-4">
       <div class="col-md-4">
@@ -175,7 +193,11 @@
         </table>
       </div>
     </div>
-  </div>  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>  <script>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
       authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
@@ -183,68 +205,74 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    const auth = firebase.auth();
-
-    db.collection("portfolio").orderBy("timestamp", "desc").limit(6).get()
-      .then(snapshot => {
-        const tbody = document.getElementById("dashboard-projects");
-        tbody.innerHTML = "";
-        document.getElementById("portfolioCount").innerText = snapshot.size;
-
-        if (snapshot.empty) {
-          tbody.innerHTML = `<tr><td colspan="5">No projects found.</td></tr>`;
-          return;
-        }
-
-        snapshot.forEach(doc => {
-          const d = doc.data();
-          const date = d.timestamp?.toDate().toLocaleDateString() || "-";
-          const row = `
-            <tr>
-              <td><img src="${d.image}" height="40" /></td>
-              <td>${d.title}</td>
-              <td>${d.category}</td>
-              <td>${date}</td>
-              <td>
-                <a href="portfolio-edit.html?id=${doc.id}" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
-                <a href="portfolio-list.html" class="btn btn-sm btn-outline-dark">More</a>
-              </td>
-            </tr>`;
-          tbody.innerHTML += row;
-        });
-      })
-      .catch(error => {
-        document.getElementById("dashboard-projects").innerHTML =
-          `<tr><td colspan="5" class="text-danger">Failed to load projects.</td></tr>`;
-        console.error("Firestore error:", error);
-      });
-
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const menuToggle = document.getElementById('menuToggle');
-      sidebar.classList.toggle('show');
-      menuToggle.classList.toggle('hide');
+    const auth = firebase.auth();db.collection("portfolio").orderBy("timestamp", "desc").limit(6).get()
+  .then(snapshot => {
+    const tbody = document.getElementById("dashboard-projects");
+    tbody.innerHTML = "";
+    document.getElementById("portfolioCount").innerText = snapshot.size;
+    if (snapshot.empty) {
+      tbody.innerHTML = `<tr><td colspan="5">No projects found.</td></tr>`;
+      return;
     }
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      const date = d.timestamp?.toDate().toLocaleDateString() || "-";
+      const row = `
+        <tr>
+          <td><img src="${d.image}" height="40" /></td>
+          <td>${d.title}</td>
+          <td>${d.category}</td>
+          <td>${date}</td>
+          <td>
+            <a href="portfolio-edit.html?id=${doc.id}" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
+            <a href="portfolio-list.html" class="btn btn-sm btn-outline-dark">More</a>
+          </td>
+        </tr>`;
+      tbody.innerHTML += row;
+    });
+  })
+  .catch(error => {
+    document.getElementById("dashboard-projects").innerHTML =
+      `<tr><td colspan="5" class="text-danger">Failed to load projects.</td></tr>`;
+    console.error("Firestore error:", error);
+  });
 
-    function toggleTheme() {
-      const currentTheme = document.documentElement.getAttribute("data-theme");
-      const newTheme = currentTheme === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", newTheme);
-      localStorage.setItem("theme", newTheme);
-    }
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const menuToggle = document.getElementById('menuToggle');
+  sidebar.classList.toggle('show');
+  menuToggle.classList.toggle('hide');
+}
 
-    window.onload = () => {
-      const savedTheme = localStorage.getItem("theme") || "light";
-      document.documentElement.setAttribute("data-theme", savedTheme);
-    };
+function toggleTheme() {
+  const html = document.documentElement;
+  const currentTheme = html.getAttribute("data-theme");
+  const newTheme = currentTheme === "dark" ? "light" : "dark";
+  html.setAttribute("data-theme", newTheme);
+  localStorage.setItem("theme", newTheme);
+  const icon = document.querySelector("#themeButton i");
+  icon.className = newTheme === "dark" ? "ri-sun-line me-2 theme-icon spin" : "ri-moon-clear-line me-2 theme-icon spin";
+  setTimeout(() => {
+    icon.classList.remove("spin");
+  }, 300);
+}
 
-    function logout() {
-      auth.signOut().then(() => {
-        alert("Logged out successfully.");
-        window.location.href = "login.html";
-      }).catch((error) => {
-        alert("Logout failed: " + error.message);
-      });
-    }
-  </script></body>
+window.onload = () => {
+  const savedTheme = localStorage.getItem("theme") || "light";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+  const icon = document.querySelector("#themeButton i");
+  icon.className = savedTheme === "dark" ? "ri-sun-line me-2 theme-icon" : "ri-moon-clear-line me-2 theme-icon";
+};
+
+function logout() {
+  auth.signOut().then(() => {
+    alert("Logged out successfully.");
+    window.location.href = "login.html";
+  }).catch((error) => {
+    alert("Logout failed: " + error.message);
+  });
+}
+
+  </script>
+</body>
 </html>
