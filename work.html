@@ -223,19 +223,44 @@
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    // ... other config values
+    const firebaseConfig = {
+    apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
+    authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
+    projectId: "endless-grafix-admin-5fff7"
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 </script>
 
 
+
+<script>
+  db.collection("portfolio").orderBy("timestamp", "desc").get().then((snapshot) => {
+    let html = '';
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      html += `
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <img src="${data.image}" class="card-img-top" alt="${data.title}">
+            <div class="card-body">
+              <h5 class="card-title">${data.title}</h5>
+              <p class="card-text">${data.description}</p>
+              <a href="work-single.html?id=${doc.id}" class="btn btn-primary">View Details</a>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    document.getElementById("portfolio").innerHTML = html;
+  });
+</script>
+
+
+
+
 <section class="section-work pt-120 pb-150">
-    <div class="container">
+    <div id="portfolio" class="container">
         <div class="row">
             <div class="col-lg-8 mx-lg-auto">
                 <div class="text-center">
