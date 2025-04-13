@@ -51,7 +51,7 @@
       padding: 6px 12px;
       border-radius: 4px;
       cursor: pointer;
-      z-index: 1000;
+      z-index: 1001;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     @media (max-width: 768px) {
@@ -83,7 +83,7 @@
     <a href="#"><i class="ri-article-line"></i> Blog</a>
     <a href="#"><i class="ri-mail-line"></i> Contact</a>
     <a href="#"><i class="ri-settings-3-line"></i> Settings</a>
-    <a href="#"><i class="ri-logout-box-line"></i> Logout</a>
+    <a href="#" onclick="logout()"><i class="ri-logout-box-line"></i> Logout</a>
   </div>  <div class="main-content">
     <h2 class="mb-4">Welcome back, Admin</h2><div class="row mb-4">
   <div class="col-md-4">
@@ -129,7 +129,7 @@
   </div>
 </div>
 
-  </div>  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>  <script>
+  </div>  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
       authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
@@ -137,6 +137,7 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const auth = firebase.auth();
 
     db.collection("portfolio").orderBy("timestamp", "desc").limit(6).get()
       .then(snapshot => {
@@ -174,6 +175,15 @@
 
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('show');
+    }
+
+    function logout() {
+      auth.signOut().then(() => {
+        alert("Logged out successfully.");
+        window.location.href = "login.html"; // Redirect to your login page
+      }).catch((error) => {
+        alert("Logout failed: " + error.message);
+      });
     }
   </script></body>
 </html>
