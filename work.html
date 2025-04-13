@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<!DOCTYPE html><html lang="en" data-bs-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,34 +9,36 @@
   <link rel="stylesheet" href="assets/css/main.css" />
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <style>
+    #preloader {
+      transition: opacity 0.4s ease;
+    }
+    #preloader.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
 </head>
 <body>
-
-  <!-- Navbar (reuse your exact markup here) -->
-  <header>
+  <!-- Preloader -->
+  <div id="preloader">
+    <div class="loader-cover">
+      <div class="loader-container">
+        <div class="loader-icon"></div>
+      </div>
+    </div>
+  </div>  <!-- Navbar (reuse your exact markup here) -->  <header>
     <!-- include your full header/nav code here -->
-  </header>
-
-  <!-- Portfolio Section -->
-  <main class="container py-5">
+  </header>  <!-- Portfolio Section -->  <main class="container py-5">
     <h2 class="text-center mb-5">Our Work</h2>
     <div class="row" id="portfolio-container"></div>
-  </main>
-
-  <!-- Footer (reuse your exact markup here) -->
-  <footer>
+  </main>  <!-- Footer (reuse your exact markup here) -->  <footer>
     <!-- include your full footer code here -->
-  </footer>
-
-  <!-- Scroll to top -->
-  <div class="btn-scroll-top">
+  </footer>  <!-- Scroll to top -->  <div class="btn-scroll-top">
     <svg class="progress-square svg-content" width="100%" height="100%" viewBox="0 0 40 40">
       <path d="M8 1H32C35.866 1 39 4.13401 39 8V32C39 35.866 35.866 39 32 39H8C4.13401 39 1 35.866 1 32V8C1 4.13401 4.13401 1 8 1Z" />
     </svg>
-  </div>
-
-  <!-- Firebase Config -->
-  <script>
+  </div>  <!-- Firebase Config -->  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
       authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
@@ -45,10 +46,7 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-  </script>
-
-  <!-- Portfolio Script -->
-  <script>
+  </script>  <!-- Portfolio Script -->  <script>
     db.collection("portfolio").orderBy("timestamp", "desc").get().then((snapshot) => {
       let html = '';
       snapshot.forEach((doc) => {
@@ -68,11 +66,12 @@
         `;
       });
       document.getElementById("portfolio-container").innerHTML = html;
+      setTimeout(() => {
+        document.getElementById("preloader").classList.add("fade-out");
+      }, 500);
+    }).catch((err) => {
+      console.error("Error loading projects", err);
+      document.getElementById("preloader").classList.add("fade-out");
     });
-  </script>
-
-  <!-- Scripts -->
-  <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
-  <script src="assets/js/main.js"></script>
-</body>
+  </script>  <!-- Scripts -->  <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>  <script src="assets/js/main.js"></script></body>
 </html>
