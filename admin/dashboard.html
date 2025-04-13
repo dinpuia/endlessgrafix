@@ -83,44 +83,36 @@
         </div>
 
         <script>
-function upload() {
-  const title = document.getElementById("title").value;
-  const desc = document.getElementById("desc").value;
-  const client = document.getElementById("client").value;
-  const startDate = document.getElementById("startDate").value;
-  const endDate = document.getElementById("endDate").value;
-  const services = document.getElementById("services").value;
-  const file = document.getElementById("image").files[0];
+fetch("https://api.cloudinary.com/v1_1/dinpuia98/image/upload", {
+  method: "POST",
+  body: formData
+})
+.then(res => res.json())
+.then(data => {
+  const imageUrl = data.secure_url;
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", "portfolio_unsigned"); // change if needed
+  if (!imageUrl) {
+    throw new Error("Image upload failed. No secure_url received.");
+  }
 
-  fetch("https://api.cloudinary.com/v1_1/dinpuia98/image/upload", {
-    method: "POST",
-    body: formData
-  })
-  .then(res => res.json())
-  .then(data => {
-    const imageUrl = data.secure_url;
-
-    return db.collection("portfolio").add({
-      title,
-      description: desc,
-      client,
-      startDate,
-      endDate,
-      services,
-      image: imageUrl,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    });
-  })
-  .then(() => {
-    alert("Project uploaded!");
-    document.querySelectorAll("input, textarea").forEach(el => el.value = "");
-  })
-  .catch(err => alert("Error: " + err.message));
-}
+  return db.collection("portfolio").add({
+    title,
+    description: desc,
+    client,
+    startDate,
+    endDate,
+    services,
+    image: imageUrl,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  });
+})
+.then(() => {
+  alert("Project uploaded successfully!");
+  document.querySelectorAll("input, textarea").forEach(el => el.value = "");
+})
+.catch(err => {
+  alert("Upload failed: " + err.message);
+});
 
         </script>
       </body>
