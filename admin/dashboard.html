@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" data-theme="light">
+<!DOCTYPE html><html lang="en" data-mdb-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,7 @@
       --sidebar-bg: #1e1c1f;
       --sidebar-text: #cfd8dc;
     }
-    [data-theme="dark"] {
+    [data-mdb-theme="dark"] {
       --bg-color: #121212;
       --text-color: #ffffff;
       --card-bg: #1e1e1e;
@@ -88,12 +88,6 @@
       cursor: pointer;
       display: none;
     }
-    .theme-icon {
-      transition: transform 0.3s ease;
-    }
-    .theme-icon.spin {
-      transform: rotate(180deg);
-    }
     @media (max-width: 768px) {
       #sidebar {
         width: 100%;
@@ -129,6 +123,12 @@
   </style>
 </head>
 <body>
+  <script>
+    const isSystemThemeSetToDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (isSystemThemeSetToDark) {
+      document.documentElement.dataset.mdbTheme = "dark";
+    }
+  </script>
   <div class="sidebar-toggle text-dark" id="menuToggle" onclick="toggleSidebar()">
     <i class="ri-menu-line"></i>
   </div>
@@ -144,9 +144,10 @@
     <a href="#"><i class="ri-article-line"></i> Blog</a>
     <a href="#"><i class="ri-mail-line"></i> Contact</a>
     <a href="#"><i class="ri-settings-3-line"></i> Settings</a>
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeButton">
-      <i class="ri-moon-clear-line me-2 theme-icon"></i> Toggle Theme
-    </button>
+    <label class="d-flex align-items-center px-3 py-2">
+      <input type="checkbox" id="themingSwitcher" class="form-check-input me-2" />
+      <span>Dark Mode</span>
+    </label>
     <a href="#" onclick="logout()"><i class="ri-logout-box-line"></i> Logout</a>
   </div>
   <div class="main-content">
@@ -244,24 +245,35 @@ function toggleSidebar() {
   menuToggle.classList.toggle('hide');
 }
 
-function toggleTheme() {
-  const html = document.documentElement;
-  const currentTheme = html.getAttribute("data-theme");
-  const newTheme = currentTheme === "dark" ? "light" : "dark";
-  html.setAttribute("data-theme", newTheme);
-  localStorage.setItem("theme", newTheme);
-  const icon = document.querySelector("#themeButton i");
-  icon.className = newTheme === "dark" ? "ri-sun-line me-2 theme-icon spin" : "ri-moon-clear-line me-2 theme-icon spin";
-  setTimeout(() => {
-    icon.classList.remove("spin");
-  }, 300);
+const themeStitcher = document.getElementById("themingSwitcher");
+const isSystemThemeSetToDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+if (isSystemThemeSetToDark) {
+  themeStitcher.checked = true;
+  toggleTheme(true);
 }
+
+themeStitcher.addEventListener("change", (e) => {
+  toggleTheme(e.target.checked);
+});
+
+const toggleTheme = (isChecked) => {
+  const theme = isChecked ? "dark" : "light";
+  document.documentElement.setAttribute("data-mdb-theme", theme);
+  localStorage.setItem("theme", theme);
+};
+
+document.addEventListener("keydown", (e) => {
+  if (e.shiftKey && e.key === "D") {
+    themeStitcher.checked = !themeStitcher.checked;
+    toggleTheme(themeStitcher.checked);
+  }
+});
 
 window.onload = () => {
   const savedTheme = localStorage.getItem("theme") || "light";
-  document.documentElement.setAttribute("data-theme", savedTheme);
-  const icon = document.querySelector("#themeButton i");
-  icon.className = savedTheme === "dark" ? "ri-sun-line me-2 theme-icon" : "ri-moon-clear-line me-2 theme-icon";
+  document.documentElement.setAttribute("data-mdb-theme", savedTheme);
+  themeStitcher.checked = savedTheme === "dark";
 };
 
 function logout() {
