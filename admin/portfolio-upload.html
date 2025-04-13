@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Portfolio</title>
+  <link href="assets/css/vendors/bootstrap.min.css" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage-compat.js"></script>
+</head>
+<body class="container py-5">
+  <h2 class="mb-4">Upload New Portfolio Project</h2>
+  <form id="uploadForm">
+    <div class="mb-3">
+      <label for="title" class="form-label">Project Title</label>
+      <input type="text" class="form-control" id="title" required>
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea class="form-control" id="description" rows="3" required></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="category" class="form-label">Category</label>
+      <select class="form-select" id="category" required>
+        <option value="">Select category</option>
+        <option value="Poster">Poster</option>
+        <option value="Logo">Logo</option>
+        <option value="Web">Web</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="image" class="form-label">Project Image</label>
+      <input type="file" class="form-control" id="image" accept="image/*" required>
+      <img id="preview" src="#" alt="Preview" class="img-thumbnail mt-2" style="max-height: 200px; display: none;">
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+    <div id="message" class="mt-3"></div>
+  </form>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
+      authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
+      projectId: "endless-grafix-admin-5fff7"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Show image preview
+    document.getElementById("image").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          document.getElementById("preview").src = reader.result;
+          document.getElementById("preview").style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Handle form submission
+    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = document.getElementById("title").value.trim();
+      const description = document.getElementById("description").value.trim();
+      const category = document.getElementById("category").value;
+      const file = document.getElementById("image").files[0];
+      const msg = document.getElementById("message");
+
+      if (!title || !description || !category || !file) {
+        msg.innerHTML = '<span class="text-danger">All fields are required.</span>';
+        return;
+      }
+
+      msg.innerHTML = "Uploading...";
+
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "ml_default");
+        formData.append("cloud_name", "dinpuia98");
+
+        const res = await fetch("https://api.cloudinary.com/v1_1/dinpuia98/image/upload", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await res.json();
+        if (!data.secure_url) throw new Error("Image upload failed.");
+
+        await db.collection("portfolio").add({
+          title,
+          description,
+          category,
+          image: data.secure_url,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        msg.innerHTML = '<span class="text-success">Project uploaded successfully!</span>';
+        document.getElementById("uploadForm").reset();
+        document.getElementById("preview").style.display = 'none';
+
+      } catch (error) {
+        console.error(error);
+        msg.innerHTML = '<span class="text-danger">Upload failed. Please try again.</span>';
+      }
+    });
+  </script>
+</body>
+</html>
