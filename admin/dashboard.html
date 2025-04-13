@@ -80,15 +80,13 @@
       display: none;
     }
     .theme-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1050;
-      background: white;
+      color: var(--sidebar-text);
+      background: none;
       border: none;
-      border-radius: 4px;
-      padding: 6px 12px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 12px 20px;
       cursor: pointer;
     }
     @media (max-width: 768px) {
@@ -117,9 +115,7 @@
 <body>
   <div class="sidebar-toggle text-dark" id="menuToggle" onclick="toggleSidebar()">
     <i class="ri-menu-line"></i>
-  </div><button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
-
-  <div id="sidebar">
+  </div>  <div id="sidebar">
     <div class="close-btn" onclick="toggleSidebar()">
       <i class="ri-close-line"></i>
     </div>
@@ -131,6 +127,9 @@
     <a href="#"><i class="ri-article-line"></i> Blog</a>
     <a href="#"><i class="ri-mail-line"></i> Contact</a>
     <a href="#"><i class="ri-settings-3-line"></i> Settings</a>
+    <button class="theme-toggle" onclick="toggleTheme()">
+      <i class="ri-moon-clear-line me-2"></i> Toggle Theme
+    </button>
     <a href="#" onclick="logout()"><i class="ri-logout-box-line"></i> Logout</a>
   </div>  <div class="main-content">
     <h2 class="mb-4">Welcome back, Admin</h2>
