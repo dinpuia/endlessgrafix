@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en" data-mdb-theme="light">
+<!DOCTYPE html>
+<html lang="en" data-mdb-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -206,85 +207,86 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    const auth = firebase.auth();db.collection("portfolio").orderBy("timestamp", "desc").limit(6).get()
-  .then(snapshot => {
-    const tbody = document.getElementById("dashboard-projects");
-    tbody.innerHTML = "";
-    document.getElementById("portfolioCount").innerText = snapshot.size;
-    if (snapshot.empty) {
-      tbody.innerHTML = `<tr><td colspan="5">No projects found.</td></tr>`;
-      return;
+    const auth = firebase.auth();
+
+    db.collection("portfolio").orderBy("timestamp", "desc").limit(6).get()
+      .then(snapshot => {
+        const tbody = document.getElementById("dashboard-projects");
+        tbody.innerHTML = "";
+        document.getElementById("portfolioCount").innerText = snapshot.size;
+        if (snapshot.empty) {
+          tbody.innerHTML = `<tr><td colspan="5">No projects found.</td></tr>`;
+          return;
+        }
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          const date = d.timestamp?.toDate().toLocaleDateString() || "-";
+          const row = `
+            <tr>
+              <td><img src="${d.image}" height="40" /></td>
+              <td>${d.title}</td>
+              <td>${d.category}</td>
+              <td>${date}</td>
+              <td>
+                <a href="portfolio-edit.html?id=${doc.id}" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
+                <a href="portfolio-list.html" class="btn btn-sm btn-outline-dark">More</a>
+              </td>
+            </tr>`;
+          tbody.innerHTML += row;
+        });
+      })
+      .catch(error => {
+        document.getElementById("dashboard-projects").innerHTML =
+          `<tr><td colspan="5" class="text-danger">Failed to load projects.</td></tr>`;
+        console.error("Firestore error:", error);
+      });
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const menuToggle = document.getElementById('menuToggle');
+      sidebar.classList.toggle('show');
+      menuToggle.classList.toggle('hide');
     }
-    snapshot.forEach(doc => {
-      const d = doc.data();
-      const date = d.timestamp?.toDate().toLocaleDateString() || "-";
-      const row = `
-        <tr>
-          <td><img src="${d.image}" height="40" /></td>
-          <td>${d.title}</td>
-          <td>${d.category}</td>
-          <td>${date}</td>
-          <td>
-            <a href="portfolio-edit.html?id=${doc.id}" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
-            <a href="portfolio-list.html" class="btn btn-sm btn-outline-dark">More</a>
-          </td>
-        </tr>`;
-      tbody.innerHTML += row;
+
+    const themeStitcher = document.getElementById("themingSwitcher");
+    const isSystemThemeSetToDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    if (isSystemThemeSetToDark) {
+      themeStitcher.checked = true;
+      toggleTheme(true);
+    }
+
+    themeStitcher.addEventListener("change", (e) => {
+      toggleTheme(e.target.checked);
     });
-  })
-  .catch(error => {
-    document.getElementById("dashboard-projects").innerHTML =
-      `<tr><td colspan="5" class="text-danger">Failed to load projects.</td></tr>`;
-    console.error("Firestore error:", error);
-  });
 
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const menuToggle = document.getElementById('menuToggle');
-  sidebar.classList.toggle('show');
-  menuToggle.classList.toggle('hide');
-}
+    const toggleTheme = (isChecked) => {
+      const theme = isChecked ? "dark" : "light";
+      document.documentElement.setAttribute("data-mdb-theme", theme);
+      localStorage.setItem("theme", theme);
+    };
 
-const themeStitcher = document.getElementById("themingSwitcher");
-const isSystemThemeSetToDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.addEventListener("keydown", (e) => {
+      if (e.shiftKey && e.key === "D") {
+        themeStitcher.checked = !themeStitcher.checked;
+        toggleTheme(themeStitcher.checked);
+      }
+    });
 
-if (isSystemThemeSetToDark) {
-  themeStitcher.checked = true;
-  toggleTheme(true);
-}
+    window.onload = () => {
+      const savedTheme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-mdb-theme", savedTheme);
+      themeStitcher.checked = savedTheme === "dark";
+    };
 
-themeStitcher.addEventListener("change", (e) => {
-  toggleTheme(e.target.checked);
-});
-
-const toggleTheme = (isChecked) => {
-  const theme = isChecked ? "dark" : "light";
-  document.documentElement.setAttribute("data-mdb-theme", theme);
-  localStorage.setItem("theme", theme);
-};
-
-document.addEventListener("keydown", (e) => {
-  if (e.shiftKey && e.key === "D") {
-    themeStitcher.checked = !themeStitcher.checked;
-    toggleTheme(themeStitcher.checked);
-  }
-});
-
-window.onload = () => {
-  const savedTheme = localStorage.getItem("theme") || "light";
-  document.documentElement.setAttribute("data-mdb-theme", savedTheme);
-  themeStitcher.checked = savedTheme === "dark";
-};
-
-function logout() {
-  auth.signOut().then(() => {
-    alert("Logged out successfully.");
-    window.location.href = "login.html";
-  }).catch((error) => {
-    alert("Logout failed: " + error.message);
-  });
-}
-
+    function logout() {
+      auth.signOut().then(() => {
+        alert("Logged out successfully.");
+        window.location.href = "login.html";
+      }).catch((error) => {
+        alert("Logout failed: " + error.message);
+      });
+    }
   </script>
 </body>
 </html>
