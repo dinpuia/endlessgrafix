@@ -4,41 +4,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
   <title>Endless Grafix Portfolio</title>
-  <!-- Include your existing CSS links here -->
   <link rel="stylesheet" href="assets/css/vendors/bootstrap.min.css" />
   <link rel="stylesheet" href="assets/css/main.css" />
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
   <style>
-    #preloader {
-      transition: opacity 0.4s ease;
-    }
-    #preloader.fade-out {
-      opacity: 0;
-      pointer-events: none;
-    }
+    #preloader { transition: opacity 0.4s ease; }
+    #preloader.fade-out { opacity: 0; pointer-events: none; }
+    .btn-filter.active { background-color: #0d6efd; color: white; }
   </style>
 </head>
 <body>
-  <!-- Preloader -->
   <div id="preloader">
     <div class="loader-cover">
       <div class="loader-container">
         <div class="loader-icon"></div>
       </div>
     </div>
-  </div>  <!-- Navbar (reuse your exact markup here) -->  <header>
-    <!-- include your full header/nav code here -->
-  </header>  <!-- Portfolio Section -->  <main class="container py-5">
-    <h2 class="text-center mb-5">Our Work</h2>
+  </div>  <header>
+    <!-- Your navbar/header code -->
+  </header>  <main class="container py-5">
+    <h2 class="text-center mb-4">Our Work</h2>
+    <div class="text-center mb-4">
+      <button class="btn btn-outline-primary btn-filter me-2 active" data-category="all">All</button>
+      <button class="btn btn-outline-primary btn-filter me-2" data-category="Poster">Poster</button>
+      <button class="btn btn-outline-primary btn-filter me-2" data-category="Logo">Logo</button>
+      <button class="btn btn-outline-primary btn-filter" data-category="Web">Web</button>
+    </div>
     <div class="row" id="portfolio-container"></div>
-  </main>  <!-- Footer (reuse your exact markup here) -->  <footer>
-    <!-- include your full footer code here -->
-  </footer>  <!-- Scroll to top -->  <div class="btn-scroll-top">
+    <div class="text-center mt-4">
+      <button class="btn btn-secondary" id="load-more">Load More</button>
+    </div>
+  </main>  <footer>
+    <!-- Your footer code -->
+  </footer>  <div class="btn-scroll-top">
     <svg class="progress-square svg-content" width="100%" height="100%" viewBox="0 0 40 40">
       <path d="M8 1H32C35.866 1 39 4.13401 39 8V32C39 35.866 35.866 39 32 39H8C4.13401 39 1 35.866 1 32V8C1 4.13401 4.13401 1 8 1Z" />
     </svg>
-  </div>  <!-- Firebase Config -->  <script>
+  </div>  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
       authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
@@ -46,32 +49,61 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-  </script>  <!-- Portfolio Script -->  <script>
-    db.collection("portfolio").orderBy("timestamp", "desc").get().then((snapshot) => {
-      let html = '';
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const id = doc.id;
-        html += `
-          <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-              <img src="${data.image}" class="card-img-top" alt="${data.title}" style="object-fit:cover; max-height:200px">
-              <div class="card-body d-flex flex-column">
-                <h5 class="card-title">${data.title}</h5>
-                <p class="card-text">${data.description.slice(0, 80)}...</p>
-                <a href="work-single.html?id=${id}" class="btn btn-primary mt-auto">View Details</a>
-              </div>
-            </div>
-          </div>
-        `;
-      });
-      document.getElementById("portfolio-container").innerHTML = html;
-      setTimeout(() => {
+
+    let lastVisible = null;
+    let currentCategory = "all";
+    let batchSize = 6;
+
+    const loadProjects = (reset = false) => {
+      let ref = db.collection("portfolio").orderBy("timestamp", "desc");
+      if (currentCategory !== "all") ref = ref.where("category", "==", currentCategory);
+      if (lastVisible && !reset) ref = ref.startAfter(lastVisible);
+
+      ref.limit(batchSize).get().then(snapshot => {
+        if (reset) document.getElementById("portfolio-container").innerHTML = "";
+        if (!snapshot.empty) {
+          lastVisible = snapshot.docs[snapshot.docs.length - 1];
+          snapshot.forEach(doc => {
+            const d = doc.data();
+            const card = `
+              <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                  <img src="${d.image}" class="card-img-top" alt="${d.title}" style="object-fit:cover; max-height:200px">
+                  <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">${d.title}</h5>
+                    <p class="card-text">${d.description.slice(0, 80)}...</p>
+                    <a href="work-single.html?id=${doc.id}" class="btn btn-primary mt-auto">View Details</a>
+                  </div>
+                </div>
+              </div>`;
+            document.getElementById("portfolio-container").insertAdjacentHTML("beforeend", card);
+          });
+        } else if (reset) {
+          document.getElementById("portfolio-container").innerHTML = "<p class='text-center'>No projects found.</p>";
+        }
         document.getElementById("preloader").classList.add("fade-out");
-      }, 500);
-    }).catch((err) => {
-      console.error("Error loading projects", err);
-      document.getElementById("preloader").classList.add("fade-out");
+      }).catch(e => {
+        console.error(e);
+        document.getElementById("preloader").classList.add("fade-out");
+      });
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadProjects(true);
+
+      document.querySelectorAll(".btn-filter").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".btn-filter").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          currentCategory = btn.getAttribute("data-category");
+          lastVisible = null;
+          loadProjects(true);
+        });
+      });
+
+      document.getElementById("load-more").addEventListener("click", () => {
+        loadProjects();
+      });
     });
-  </script>  <!-- Scripts -->  <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>  <script src="assets/js/main.js"></script></body>
+  </script>  <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>  <script src="assets/js/main.js"></script></body>
 </html>
