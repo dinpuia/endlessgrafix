@@ -230,6 +230,16 @@
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
+    const params = new URLSearchParams(window.location.search);
+const projectId = params.get("id");
+
+db.collection("portfolio").doc(projectId).get().then(doc => {
+  const data = doc.data();
+  document.getElementById("title").innerText = data.title;
+  document.getElementById("description").innerText = data.description;
+  document.getElementById("image").src = data.image;
+});
+
 
   db.collection("portfolio").orderBy("timestamp", "desc").get().then((snapshot) => {
     let html = '';
@@ -251,7 +261,7 @@
             <div class="col-lg-8 mx-lg-auto mb-lg-0">
                 <div class="text-center">
                     <div class="btn btn-gradient d-inline-block text-uppercase">work details</div>
-                    <h3 class="ds-3 mt-3 mb-4 text-dark" id= "title">Travila - Travel Booking App Logo Design</h3>
+                    <h2 id="title">Travila - Travel Booking App Logo Design</h2>
                     <p class="text-300 fs-5 mb-0">The project involved creating an intuitive and visually appealing user interface, ensuring that users can effortlessly book flights, hotels, and car rentals all within a single app.</p>
                 </div>
             </div>
@@ -277,14 +287,14 @@
                     <h6>fushion.wr</h6>
                 </div>
             </div>
-            <img src="assets/imgs/work/img-background.png" id="image"alt="zelio" />
+         <img id="image" />
             <div class="col-lg-8 mx-lg-auto mt-8">
                 <h5 class="fs-5 fw-medium">Description</h5>
                <div id="mainContent"> <p class="text-300">Travila is a comprehensive travel booking designed to provide users with a seamless and enjoyable booking experience. The project involved creating an intuitive and visually appealing user interface, ensuring that users can effortlessly book flights, hotels, and car rentals all within a single app. The primary goal was to enhance the overall user experience, making travel planning easy and enjoyable.</p>
                 <h5 class="fs-5 fw-medium mt-4">Key Features</h5>
                 <ul>
                     <li>
-                        <p class="text-dark fw-bold">User-Centric Interface: <span class="text-300 fw-medium">Designed a clean and intuitive interface that allows users to navigate through the app with ease, ensuring a smooth and enjoyable booking process.</span></p>
+                        <p id="description" class="text-dark fw-bold">User-Centric Interface: <span class="text-300 fw-medium">Designed a clean and intuitive interface that allows users to navigate through the app with ease, ensuring a smooth and enjoyable booking process.</span></p>
                     </li>
                     <li>
                         <p class="text-dark fw-bold">Integrated Search and Booking: <span class="text-300 fw-medium">Developed an integrated search function that enables users to find and book flights, hotels, and car rentals quickly and efficiently.</span></p>
