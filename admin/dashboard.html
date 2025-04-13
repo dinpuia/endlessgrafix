@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,6 +19,8 @@
       left: 0;
       padding-top: 30px;
       color: white;
+      transition: transform 0.3s ease;
+      z-index: 999;
     }
     #sidebar a {
       color: #cfd8dc;
@@ -34,15 +35,46 @@
     .main-content {
       margin-left: 250px;
       padding: 40px;
+      transition: margin-left 0.3s ease;
     }
     .card {
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      font-size: 24px;
+      background: white;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    @media (max-width: 768px) {
+      #sidebar {
+        transform: translateX(-100%);
+      }
+      #sidebar.show {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 20px;
+      }
+      .sidebar-toggle {
+        display: block;
+      }
+    }
   </style>
 </head>
 <body>
-  <div id="sidebar">
+  <div class="sidebar-toggle text-dark" onclick="toggleSidebar()">
+    <i class="ri-menu-line"></i>
+  </div>  <div id="sidebar">
     <h4 class="text-center mb-4">Endless Grafix</h4>
     <a href="#" class="active"><i class="ri-dashboard-line"></i> Dashboard</a>
     <a href="portfolio-upload.html"><i class="ri-upload-2-line"></i> Upload Portfolio</a>
@@ -52,57 +84,52 @@
     <a href="#"><i class="ri-mail-line"></i> Contact</a>
     <a href="#"><i class="ri-settings-3-line"></i> Settings</a>
     <a href="#"><i class="ri-logout-box-line"></i> Logout</a>
-  </div>
-
-  <div class="main-content">
-    <h2 class="mb-4">Welcome back, Admin</h2>
-
-    <div class="row mb-4">
-      <div class="col-md-4">
-        <div class="card p-3">
-          <h5>Total Portfolio</h5>
-          <p class="display-6" id="portfolioCount">0</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card p-3">
-          <h5>Total Messages</h5>
-          <p class="display-6">--</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card p-3">
-          <h5>Blog Posts</h5>
-          <p class="display-6">--</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4>Recent Portfolio Uploads</h4>
-      <a href="portfolio-upload.html" class="btn btn-primary">+ Add New</a>
-    </div>
+  </div>  <div class="main-content">
+    <h2 class="mb-4">Welcome back, Admin</h2><div class="row mb-4">
+  <div class="col-md-4">
     <div class="card p-3">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="dashboard-projects">
-          <tr><td colspan="5">Loading latest projects...</td></tr>
-        </tbody>
-      </table>
+      <h5>Total Portfolio</h5>
+      <p class="display-6" id="portfolioCount">0</p>
     </div>
   </div>
+  <div class="col-md-4">
+    <div class="card p-3">
+      <h5>Total Messages</h5>
+      <p class="display-6">--</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3">
+      <h5>Blog Posts</h5>
+      <p class="display-6">--</p>
+    </div>
+  </div>
+</div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-  <script>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Recent Portfolio Uploads</h4>
+  <a href="portfolio-upload.html" class="btn btn-primary">+ Add New</a>
+</div>
+<div class="card p-3">
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="dashboard-projects">
+        <tr><td colspan="5">Loading latest projects...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  </div>  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
       authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
@@ -144,6 +171,9 @@
           `<tr><td colspan="5" class="text-danger">Failed to load projects.</td></tr>`;
         console.error("Firestore error:", error);
       });
-  </script>
-</body>
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('show');
+    }
+  </script></body>
 </html>
