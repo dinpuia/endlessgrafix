@@ -218,13 +218,40 @@
         <main>
             <!-- prettier-ignore -->
             <!-- work single -->
+            <div id="portfolio"></div>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+<script>
+  // Initialize Firebase (reuse config here or import firebase.js if you're modular)
+  const firebaseConfig = {
+    apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
+    authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
+    projectId: "endless-grafix-admin-5fff7"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  db.collection("portfolio").orderBy("timestamp", "desc").get().then((snapshot) => {
+    let html = '';
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      html += `
+        <div class="project">
+          <img src="${data.image}" alt="${data.title}" width="300">
+          <h3>${data.title}</h3>
+          <p>${data.description}</p>
+        </div>
+      `;
+    });
+    document.getElementById("portfolio").innerHTML = html;
+  });
 <section class="section-work-single section-padding">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 mx-lg-auto mb-lg-0">
                 <div class="text-center">
                     <div class="btn btn-gradient d-inline-block text-uppercase">work details</div>
-                    <h3 class="ds-3 mt-3 mb-4 text-dark">Travila - Travel Booking App Logo Design</h3>
+                    <h3 class="ds-3 mt-3 mb-4 text-dark" id= "title">Travila - Travel Booking App Logo Design</h3>
                     <p class="text-300 fs-5 mb-0">The project involved creating an intuitive and visually appealing user interface, ensuring that users can effortlessly book flights, hotels, and car rentals all within a single app.</p>
                 </div>
             </div>
@@ -253,7 +280,7 @@
             <img src="assets/imgs/work/img-background.png" alt="zelio" />
             <div class="col-lg-8 mx-lg-auto mt-8">
                 <h5 class="fs-5 fw-medium">Description</h5>
-                <p class="text-300">Travila is a comprehensive travel booking app designed to provide users with a seamless and enjoyable booking experience. The project involved creating an intuitive and visually appealing user interface, ensuring that users can effortlessly book flights, hotels, and car rentals all within a single app. The primary goal was to enhance the overall user experience, making travel planning easy and enjoyable.</p>
+                <p class="text-300" id="description">Travila is a comprehensive travel booking app designed to provide users with a seamless and enjoyable booking experience. The project involved creating an intuitive and visually appealing user interface, ensuring that users can effortlessly book flights, hotels, and car rentals all within a single app. The primary goal was to enhance the overall user experience, making travel planning easy and enjoyable.</p>
                 <h5 class="fs-5 fw-medium mt-4">Key Features</h5>
                 <ul>
                     <li>
