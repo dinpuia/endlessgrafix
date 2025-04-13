@@ -1,103 +1,132 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <title>Dashboard - Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/icons.min.css" rel="stylesheet">
+  <link href="assets/css/app.min.css" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-  <script src="firebase.js"></script>
 </head>
-<body class="bg-light">
-  <div class="container py-5">
-    <h2 class="text-center mb-4">Upload New Portfolio Item</h2>
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <div class="mb-3">
-              <label class="form-label">Project Title</label>
-              <input type="text" id="title" class="form-control" placeholder="Enter title">
+<body>
+  <div id="layout-wrapper">
+    <!-- Sidebar -->
+    <div class="vertical-menu">
+      <div data-simplebar class="h-100">
+        <div class="navbar-brand-box">
+          <a href="dashboard.html" class="logo logo-dark">
+            <span class="logo-sm"><img src="assets/images/logo-sm.png" alt="" height="22"></span>
+            <span class="logo-lg"><img src="assets/images/logo-dark.png" alt="" height="20"></span>
+          </a>
+        </div>
+        <ul class="metismenu list-unstyled" id="side-menu">
+          <li class="menu-title">Custom</li>
+          <li><a href="messages.html" class="waves-effect"><i class="ri-message-3-line"></i><span>Messages</span></a></li>
+          <li><a href="portfolio-upload.html" class="waves-effect"><i class="ri-upload-cloud-line"></i><span>Upload Portfolio</span></a></li>
+          <li><a href="portfolio-list.html" class="waves-effect"><i class="ri-list-check-2"></i><span>View Portfolio</span></a></li>
+          <li><a href="projects.html" class="waves-effect"><i class="ri-briefcase-line"></i><span>Projects</span></a></li>
+          <li><a href="blog.html" class="waves-effect"><i class="ri-article-line"></i><span>Blog</span></a></li>
+          <li><a href="contact.html" class="waves-effect"><i class="ri-contacts-book-line"></i><span>Contact Us</span></a></li>
+          <li><a href="settings.html" class="waves-effect"><i class="ri-settings-3-line"></i><span>Settings</span></a></li>
+          <li><a href="logout.html" class="waves-effect text-danger"><i class="ri-logout-box-line"></i><span>Logout</span></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="page-content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <h4 class="mb-4">Welcome back, Admin 👋</h4>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Recent Portfolio Uploads</h5>
+                <a href="portfolio-upload.html" class="btn btn-primary">+ Add New</a>
+              </div>
+              <div class="card">
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-bordered align-middle mb-0">
+                      <thead>
+                        <tr>
+                          <th>Image</th>
+                          <th>Title</th>
+                          <th>Category</th>
+                          <th>Date</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody id="dashboard-projects">
+                        <tr><td colspan="5">Loading latest projects...</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="text-end mt-3">
+                    <a href="portfolio-list.html" class="btn btn-outline-secondary">View All Projects</a>
+                  </div>
+                </div>
+              </div>
+              <div id="message" class="mt-3"></div>
             </div>
-            <div class="mb-3">
-              <label class="form-label">Description</label>
-              <textarea id="desc" class="form-control" placeholder="Enter description"></textarea>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Client Name</label>
-              <input type="text" id="client" class="form-control" placeholder="Client">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Start Date</label>
-              <input type="date" id="startDate" class="form-control">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">End Date</label>
-              <input type="date" id="endDate" class="form-control">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Services</label>
-              <input type="text" id="services" class="form-control" placeholder="e.g. Logo Design, Branding">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Project Image</label>
-              <input type="file" id="image" class="form-control">
-            </div>
-            <button onclick="upload()" class="btn btn-success w-100">Upload</button>
           </div>
         </div>
       </div>
+
+      <footer class="footer">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6">© Endless Grafix.</div>
+            <div class="col-sm-6">
+              <div class="text-sm-end d-none d-sm-block">Crafted by Dinpui</div>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
-  </div>  <script>
-    function upload() {
-      const title = document.getElementById("title").value;
-      const desc = document.getElementById("desc").value;
-      const client = document.getElementById("client").value;
-      const startDate = document.getElementById("startDate").value;
-      const endDate = document.getElementById("endDate").value;
-      const services = document.getElementById("services").value;
-      const file = document.getElementById("image").files[0];
+  </div>
 
-      if (!file) {
-        alert("Please choose an image file.");
-        return;
-      }
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
+      authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
+      projectId: "endless-grafix-admin-5fff7"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", "portfolio_unsigned");
+    const container = document.getElementById("dashboard-projects");
+    container.innerHTML = "";
 
-      fetch("https://api.cloudinary.com/v1_1/dinpui98/image/upload", {
-        method: "POST",
-        body: formData
-      })
-      .then(res => res.json())
-      .then(data => {
-        const imageUrl = data.secure_url;
-
-        if (!imageUrl) {
-          throw new Error("Image upload failed. No secure_url received.");
-        }
-
-        return db.collection("portfolio").add({
-          title,
-          description: desc,
-          client,
-          startDate,
-          endDate,
-          services,
-          image: imageUrl,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    db.collection("portfolio").orderBy("timestamp", "desc").limit(6).get().then(snapshot => {
+      if (snapshot.empty) {
+        container.innerHTML = `<tr><td colspan="5">No projects found.</td></tr>`;
+      } else {
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          const date = d.timestamp ? d.timestamp.toDate().toLocaleDateString() : "--";
+          const row = `
+            <tr>
+              <td><img src="${d.image}" alt="" height="40"></td>
+              <td>${d.title}</td>
+              <td>${d.category}</td>
+              <td>${date}</td>
+              <td>
+                <a href="portfolio-edit.html?id=${doc.id}" class="btn btn-sm btn-primary me-2">Edit</a>
+                <a href="portfolio-list.html" class="btn btn-sm btn-outline-secondary">More</a>
+              </td>
+            </tr>`;
+          container.insertAdjacentHTML("beforeend", row);
         });
-      })
-      .then(() => {
-        alert("Project uploaded successfully!");
-        document.querySelectorAll("input, textarea").forEach(el => el.value = "");
-      })
-      .catch(err => {
-        alert("Upload failed: " + err.message);
-      });
-    }
-  </script></body>
+      }
+    }).catch(error => {
+      container.innerHTML = `<tr><td colspan="5" class="text-danger">Failed to load projects.</td></tr>`;
+    });
+  </script>
+
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
 </html>
