@@ -5,39 +5,101 @@
   <title>Dashboard - Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-   <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/css/icons.min.css" rel="stylesheet">
-  <link href="assets/css/app.min.css" rel="stylesheet">
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Sidebar styling */
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #1e1c1f;
+            color: white;
+            padding-top: 20px;
+            transition: all 0.3s ease;
+            z-index: 1050; /* Ensure it appears above other content */
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+            border-radius: 5px;
+            margin: 5px 0;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar a:hover {
+            background-color: #7c2aff;
+        }
+        .sidebar .active {
+            background-color: #39373d;
+        }
+        .sidebar .sidebar-header {
+            font-size: 1.5rem;
+            text-align: left;
+            margin: 1cap;
+            margin-bottom: 20px;
+            font-weight: bold;
+            padding: 0 20px;
+        }
+        .sidebar .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            display: none; /* Hidden by default */
+        }
+
+        /* Main content styling */
+        .main-content {
+            margin-left: 270px;/* Align with sidebar width */
+            padding: 50px;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Mobile view: Hide sidebar by default */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 10px; /* Align with sidebar width */
+                padding: 20px; /* Adjust padding for mobile view */
+            }
+            .sidebar .close-btn {
+                display: block; /* Show close button in mobile view */
+            }
+        }
+    </style>
 
   
 </head>
 <body>
   <div id="layout-wrapper">
-    <!-- Sidebar -->
-    <div class="vertical-menu">
-      <div data-simplebar class="h-100">
-        <div class="navbar-brand-box">
-          <a href="dashboard.html" class="logo logo-dark">
-            <span class="logo-sm"><img src="assets/images/logo-sm.png" alt="" height="22"></span>
-            <span class="logo-lg"><img src="assets/images/logo-dark.png" alt="" height="20"></span>
-          </a>
-        </div>
-        <ul class="metismenu list-unstyled" id="side-menu">
-          <li class="menu-title">Custom</li>
-          <li><a href="messages.html" class="waves-effect"><i class="ri-message-3-line"></i><span>Messages</span></a></li>
-          <li><a href="portfolio-upload.html" class="waves-effect"><i class="ri-upload-cloud-line"></i><span>Upload Portfolio</span></a></li>
-          <li><a href="portfolio-list.html" class="waves-effect"><i class="ri-list-check-2"></i><span>View Portfolio</span></a></li>
-          <li><a href="projects.html" class="waves-effect"><i class="ri-briefcase-line"></i><span>Projects</span></a></li>
-          <li><a href="blog.html" class="waves-effect"><i class="ri-article-line"></i><span>Blog</span></a></li>
-          <li><a href="contact.html" class="waves-effect"><i class="ri-contacts-book-line"></i><span>Contact Us</span></a></li>
-          <li><a href="settings.html" class="waves-effect"><i class="ri-settings-3-line"></i><span>Settings</span></a></li>
-          <li><a href="logout.html" class="waves-effect text-danger"><i class="ri-logout-box-line"></i><span>Logout</span></a></li>
-        </ul>
-      </div>
+    <!-- Sidebar --><!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        Admin Panel
+        <span class="close-btn" id="closeSidebar">&times;</span>
     </div>
+   <a href="messages.html" class="waves-effect"><i class="ri-message-3-line"></i><span>Messages</span></a></li>
+          <a href="portfolio-upload.html" class="waves-effect"><i class="ri-upload-cloud-line"></i><span>Upload Portfolio</span></a>
+        <a href="portfolio-list.html" class="waves-effect"><i class="ri-list-check-2"></i><span>View Portfolio</span></a>
+         <a href="projects.html" class="waves-effect"><i class="ri-briefcase-line"></i><span>Projects</span></a>
+         <a href="blog.html" class="waves-effect"><i class="ri-article-line"></i><span>Blog</span></a>
+        <a href="contact.html" class="waves-effect"><i class="ri-contacts-book-line"></i><span>Contact Us</span></a>
+         <a href="settings.html" class="waves-effect"><i class="ri-settings-3-line"></i><span>Settings</span></a>
+         <a href="logout.html" class="waves-effect text-danger"><i class="ri-logout-box-line"></i><span>Logout</span></a>
+</div>
 
     <!-- Main Content -->
     <div class="main-content">
