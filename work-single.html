@@ -152,7 +152,7 @@
             document.getElementById("services").innerText = data.services || "N/A";
             document.getElementById("startDate").innerText = data.startDate || "N/A";
             document.getElementById("endDate").innerText = data.endDate || "N/A";
-            document.getElementById("description").innerHtml = data.description || "";
+            document.getElementById("description").innerHTML = data.description || "";
             if (data.image) {
               document.getElementById("image").src = data.image;
               document.getElementById("image").alt = data.title || "Project Image";
