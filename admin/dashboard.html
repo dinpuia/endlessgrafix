@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" data-theme="light">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,32 +8,18 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-    }
-    :root {
-      --bg-color: #f8f9fb;
-      --text-color: #000;
-      --card-bg: #fff;
-      --sidebar-bg: #1e1c1f;
-      --sidebar-text: #cfd8dc;
-    }
-    [data-theme="dark"] {
-      --bg-color: #121212;
-      --text-color: #ffffff;
-      --card-bg: #1e1e1e;
-      --sidebar-bg: #000000;
-      --sidebar-text: #f0f0f0;
+      background-color: #f8f9fb;
+      color: #000;
     }
     #sidebar {
       width: 250px;
-      background-color: var(--sidebar-bg);
+      background-color: #1e1c1f;
       height: 100vh;
       position: fixed;
       top: 0;
       left: 0;
       padding-top: 30px;
-      color: var(--sidebar-text);
+      color: #cfd8dc;
       transform: translateX(-100%);
       opacity: 0;
       transition: transform 0.3s ease, opacity 0.3s ease;
@@ -43,8 +29,8 @@
       transform: translateX(0);
       opacity: 1;
     }
-    #sidebar a, .theme-toggle {
-      color: var(--sidebar-text);
+    #sidebar a {
+      color: #cfd8dc;
       padding: 12px 20px;
       display: block;
       text-decoration: none;
@@ -61,10 +47,10 @@
       transition: margin-left 0.3s ease;
     }
     .card {
-      background-color: var(--card-bg);
+      background-color: #fff;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      color: var(--text-color);
+      color: #000;
     }
     .sidebar-toggle {
       display: none;
@@ -87,12 +73,6 @@
       color: white;
       cursor: pointer;
       display: none;
-    }
-    .theme-icon {
-      transition: transform 0.3s ease;
-    }
-    .theme-icon.spin {
-      transform: rotate(180deg);
     }
     @media (max-width: 768px) {
       #sidebar {
@@ -144,27 +124,24 @@
     <a href="#"><i class="ri-article-line"></i> Blog</a>
     <a href="#"><i class="ri-mail-line"></i> Contact</a>
     <a href="#"><i class="ri-settings-3-line"></i> Settings</a>
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeButton">
-      <i class="ri-moon-clear-line me-2 theme-icon"></i> Toggle Theme
-    </button>
     <a href="#" onclick="logout()"><i class="ri-logout-box-line"></i> Logout</a>
   </div>
   <div class="main-content">
     <h2 class="mb-4">Welcome back, Admin</h2>
-    <div class="row mb-4">
-      <div class="col-md-4">
+    <div class="row">
+      <div class="col-md-4 mb-4">
         <div class="card p-3">
           <h5>Total Portfolio</h5>
           <p class="display-6" id="portfolioCount">0</p>
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4 mb-4">
         <div class="card p-3">
           <h5>Total Messages</h5>
           <p class="display-6">--</p>
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4 mb-4">
         <div class="card p-3">
           <h5>Blog Posts</h5>
           <p class="display-6">--</p>
@@ -243,26 +220,6 @@ function toggleSidebar() {
   sidebar.classList.toggle('show');
   menuToggle.classList.toggle('hide');
 }
-
-function toggleTheme() {
-  const html = document.documentElement;
-  const currentTheme = html.getAttribute("data-theme");
-  const newTheme = currentTheme === "dark" ? "light" : "dark";
-  html.setAttribute("data-theme", newTheme);
-  localStorage.setItem("theme", newTheme);
-  const icon = document.querySelector("#themeButton i");
-  icon.className = newTheme === "dark" ? "ri-sun-line me-2 theme-icon spin" : "ri-moon-clear-line me-2 theme-icon spin";
-  setTimeout(() => {
-    icon.classList.remove("spin");
-  }, 300);
-}
-
-window.onload = () => {
-  const savedTheme = localStorage.getItem("theme") || "light";
-  document.documentElement.setAttribute("data-theme", savedTheme);
-  const icon = document.querySelector("#themeButton i");
-  icon.className = savedTheme === "dark" ? "ri-sun-line me-2 theme-icon" : "ri-moon-clear-line me-2 theme-icon";
-};
 
 function logout() {
   auth.signOut().then(() => {
