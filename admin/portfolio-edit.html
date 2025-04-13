@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Edit Portfolio Project</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/icons.min.css" rel="stylesheet">
+  <link href="assets/css/app.min.css" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div id="layout-wrapper">
+    <div class="main-content">
+      <div class="page-content">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-8">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title mb-4">Edit Portfolio Project</h4>
+                  <form id="editForm">
+                    <div class="mb-3">
+                      <label for="title" class="form-label">Project Title</label>
+                      <input type="text" class="form-control" id="title" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="description" class="form-label">Description</label>
+                      <textarea class="form-control" id="description" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label for="category" class="form-label">Category</label>
+                      <select class="form-select" id="category" required>
+                        <option value="Poster">Poster</option>
+                        <option value="Logo">Logo</option>
+                        <option value="Web">Web</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="image" class="form-label">Project Image (readonly)</label>
+                      <img id="imagePreview" class="img-thumbnail d-block mb-2" style="max-height: 200px;">
+                    </div>
+                    <button type="submit" class="btn btn-success">Update Project</button>
+                    <div id="message" class="mt-3"></div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
+      authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
+      projectId: "endless-grafix-admin-5fff7"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    const msg = document.getElementById("message");
+
+    if (!id) {
+      msg.innerHTML = '<span class="text-danger">No project ID provided.</span>';
+      document.getElementById("editForm").style.display = "none";
+    } else {
+      db.collection("portfolio").doc(id).get().then(doc => {
+        if (!doc.exists) {
+          msg.innerHTML = '<span class="text-danger">Project not found.</span>';
+          document.getElementById("editForm").style.display = "none";
+          return;
+        }
+        const d = doc.data();
+        document.getElementById("title").value = d.title;
+        document.getElementById("description").value = d.description;
+        document.getElementById("category").value = d.category;
+        document.getElementById("imagePreview").src = d.image;
+      });
+
+      document.getElementById("editForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const title = document.getElementById("title").value.trim();
+        const description = document.getElementById("description").value.trim();
+        const category = document.getElementById("category").value;
+
+        try {
+          await db.collection("portfolio").doc(id).update({
+            title,
+            description,
+            category
+          });
+          msg.innerHTML = '<span class="text-success">Project updated successfully!</span>';
+        } catch (error) {
+          console.error(error);
+          msg.innerHTML = '<span class="text-danger">Update failed.</span>';
+        }
+      });
+    }
+  </script>
+
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
