@@ -222,41 +222,40 @@
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
 
-<script>
+ <!-- Firebase Config -->
+  <script>
     const firebaseConfig = {
-    apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
-    authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
-    projectId: "endless-grafix-admin-5fff7"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-</script>
+      apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
+      authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
+      projectId: "endless-grafix-admin-5fff7"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
 
-
-
-<script>
-  db.collection("portfolio").orderBy("timestamp", "desc").get().then((snapshot) => {
-    let html = '';
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      html += `
-        <div class="col-md-4 mb-4">
-          <div class="card">
-            <img src="${data.image}" class="card-img-top" alt="${data.title}">
-            <div class="card-body">
-              <h5 class="card-title">${data.title}</h5>
-              <p class="card-text">${data.description}</p>
-              <a href="work-single.html?id=${doc.id}" class="btn btn-primary">View Details</a>
+ <!-- Portfolio Script -->
+  <script>
+    db.collection("portfolio").orderBy("timestamp", "desc").get().then((snapshot) => {
+      let html = '';
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const id = doc.id;
+        html += `
+          <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+              <img src="${data.image}" class="card-img-top" alt="${data.title}" style="object-fit:cover; max-height:200px">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">${data.title}</h5>
+                <p class="card-text">${data.description.slice(0, 80)}...</p>
+                <a href="work-single.html?id=${id}" class="btn btn-primary mt-auto">View Details</a>
+              </div>
             </div>
           </div>
-        </div>
-      `;
+        `;
+      });
+      document.getElementById("portfolio-container").innerHTML = html;
     });
-    document.getElementById("portfolio").innerHTML = html;
-  });
-</script>
-
-
+  </script>
 
 
 <section class="section-work pt-120 pb-150">
@@ -274,6 +273,36 @@
             </div>
         </div>
     </div>
+ <!-- Portfolio Script -->
+  <script>
+    db.collection("portfolio").orderBy("timestamp", "desc").get().then((snapshot) => {
+      let html = '';
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const id = doc.id;
+        html += `
+    <div class="container">
+        <div class="row">
+            <div class="card-scroll mt-8">
+                <div class="cards">
+                    <!-- prettier-ignore -->
+                    <div class="card-custom" data-index="0">
+    <div class="card__inner bg-6 p-lg-6 p-md-4 p-3">
+        <div class="card__image-container zoom-img position-relative">
+              <img src="${data.image}" class="card__image" alt="${data.title}" style="object-fit:cover; max-height:200px">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card__title d-md-flex align-items-center mb-0 mb-lg-2"">${data.title}</h5>
+                <p class=""card-icon d-none d-md-inline-flex border text-dark border-dark icon-shape ms-auto icon-md rounded-circle">${data.description.slice(0, 80)}...</p>
+                <a href="work-single.html?id=${id}" class="btn btn-primary mt-auto">View Details</a>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      document.getElementById("portfolio-container").innerHTML = html;
+    });
+  </script>
+
     <div class="container">
         <div class="row">
             <div class="card-scroll mt-8">
