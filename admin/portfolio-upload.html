@@ -88,16 +88,32 @@
       #sidebar {
         width: 100%;
         max-width: 280px;
+        padding-top: 20px;
       }
-      #sidebar .close-btn {
-        display: block;
-      }
-      .sidebar-toggle {
+      #sidebar.show .close-btn {
         display: block;
       }
       .main-content {
         margin-left: 0;
-        padding: 80px 20px;
+        padding: 80px 20px 20px 20px;
+      }
+      .sidebar-toggle {
+        display: block;
+      }
+      .sidebar-toggle.hide {
+        display: none;
+      }
+      .card h5, .card p {
+        font-size: 1rem;
+      }
+      .card {
+        padding: 1rem;
+      }
+      .table-responsive {
+        overflow-x: auto;
+      }
+      .table {
+        font-size: 0.875rem;
       }
     }
   </style>
