@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>View Blog | Endless Grafix</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fb;
+      color: #111;
+      padding-top: 60px;
+    }
+    .blog-title {
+      font-size: 2.2rem;
+      font-weight: bold;
+    }
+    .blog-image {
+      max-height: 400px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+    .blog-meta {
+      font-size: 0.9rem;
+      color: #777;
+      margin-bottom: 20px;
+    }
+    .blog-content {
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div id="blogContainer">
+    <!-- Blog will render here -->
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
+    authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
+    projectId: "endless-grafix-admin-5fff7"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const blogId = urlParams.get("id");
+  const blogSlug = urlParams.get("slug");
+
+  async function loadBlog() {
+    let doc;
+
+    if (blogId) {
+      doc = await db.collection("blogs").doc(blogId).get();
+    } else if (blogSlug) {
+      const snapshot = await db.collection("blogs").where("slug", "==", blogSlug).limit(1).get();
+      if (!snapshot.empty) {
+        doc = snapshot.docs[0];
+      }
+    }
+
+    if (!doc || !doc.exists) {
+      document.getElementById("blogContainer").innerHTML = `<p class="text-danger">Blog not found.</p>`;
+      return;
+    }
+
+    const d = doc.data();
+    const date = d.timestamp?.toDate().toLocaleDateString() || "";
+
+    document.title = d.title + " | Endless Grafix";
+
+    document.getElementById("blogContainer").innerHTML = `
+      <img src="${d.image}" class="blog-image" alt="${d.title}" />
+      <h1 class="blog-title">${d.title}</h1>
+      <div class="blog-meta">Published on ${date}</div>
+      <div class="blog-content">${d.content}</div>
+    `;
+  }
+
+  loadBlog();
+</script>
+</body>
+</html>
