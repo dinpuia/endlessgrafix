@@ -426,7 +426,7 @@
             // Fetch and render cards
             async function renderPortfolioCards() {
               const querySnapshot = await getDocs(portfolioRef);
-              const container = document.getElementById("portfolio-container");
+              const container = document.getElementById("portfolio-container").innerHTML += generatedCardHTML;
           
               querySnapshot.forEach((doc, index) => {
                 const d = doc.data();
