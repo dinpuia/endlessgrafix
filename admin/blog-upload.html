@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Blog | Endless Grafix</title>
+  <link href="../assets/css/vendors/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-color: #f8f9fb;
+      --text-color: #000;
+      --card-bg: #fff;
+      --sidebar-bg: #1e1c1f;
+      --sidebar-text: #cfd8dc;
+    }
+    [data-theme="dark"] {
+      --bg-color: #121212;
+      --text-color: #fff;
+      --card-bg: #1e1e1e;
+      --sidebar-bg: #000;
+      --sidebar-text: #f0f0f0;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+    #sidebar {
+      width: 250px;
+      background-color: var(--sidebar-bg);
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding-top: 30px;
+      color: var(--sidebar-text);
+      transform: translateX(-100%);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 1040;
+    }
+    #sidebar.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    #sidebar a {
+      color: var(--sidebar-text);
+      padding: 12px 20px;
+      display: block;
+      text-decoration: none;
+    }
+    #sidebar a:hover, #sidebar .active {
+      background-color: #39373d;
+      color: white;
+    }
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 24px;
+      background: white;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      z-index: 1050;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .main-content {
+      margin-left: 250px;
+      padding: 40px;
+    }
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    @media (max-width: 768px) {
+      #sidebar {
+        width: 100%;
+        max-width: 280px;
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 80px 20px;
+      }
+      .sidebar-toggle {
+        display: block;
+      }
+    }
+    @media (min-width: 769px) {
+      #sidebar {
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+      }
+      .sidebar-toggle {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar-toggle text-dark" id="menuToggle" onclick="toggleSidebar()">
+  <i class="ri-menu-line"></i>
+</div>
+
+<div id="sidebar">
+  <div class="close-btn" onclick="toggleSidebar()">
+    <i class="ri-close-line"></i>
+  </div>
+  <h4 class="text-center mb-4">Endless Grafix</h4>
+  <a href="dashboard.html"><i class="ri-dashboard-line"></i> Dashboard</a>
+  <a href="portfolio-upload.html"><i class="ri-upload-2-line"></i> Upload Portfolio</a>
+  <a href="portfolio-list.html"><i class="ri-file-list-line"></i> Portfolio List</a>
+  <a href="blog-upload.html" class="active"><i class="ri-article-line"></i> Upload Blog</a>
+  <a href="messages.html"><i class="ri-mail-line"></i> Messages</a>
+  <a href="settings.html"><i class="ri-settings-3-line"></i> Settings</a>
+  <a href="#" onclick="logout()"><i class="ri-logout-box-line"></i> Logout</a>
+</div>
+
+<div class="main-content">
+  <h2 class="mb-4">Upload Blog Post</h2>
+
+  <div class="card">
+    <form id="blogForm">
+      <label class="form-label">Title</label>
+      <input type="text" id="title" class="form-control mb-3" required />
+
+      <label class="form-label">Slug (URL-friendly)</label>
+      <input type="text" id="slug" class="form-control mb-3" placeholder="auto-generated or customize" />
+
+      <label class="form-label">Featured Image</label>
+      <input type="file" id="image" class="form-control mb-3" required />
+
+      <label class="form-label">Content</label>
+      <div id="editor" style="height: 200px;"></div>
+
+      <button type="submit" class="btn btn-primary mt-4">Publish Blog</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
+    authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
+    projectId: "endless-grafix-admin-5fff7"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const quill = new Quill('#editor', { theme: 'snow' });
+
+  function generateSlug(text) {
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+
+  document.getElementById("title").addEventListener("input", () => {
+    const title = document.getElementById("title").value;
+    document.getElementById("slug").value = generateSlug(title);
+  });
+
+  document.getElementById("blogForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("title").value;
+    const slug = document.getElementById("slug").value || generateSlug(title);
+    const content = quill.root.innerHTML;
+    const file = document.getElementById("image").files[0];
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "portfolio_unsigned");
+
+    const res = await fetch("https://api.cloudinary.com/v1_1/dinpui98/image/upload", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+    if (!data.secure_url) return alert("Image upload failed");
+
+    await db.collection("blogs").add({
+      title,
+      slug,
+      content,
+      image: data.secure_url,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    alert("Blog published successfully!");
+    window.location.href = "blog-list.html";
+  });
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('show');
+    document.getElementById('menuToggle').classList.toggle('hide');
+  }
+
+  function logout() {
+    alert("Logged out");
+    window.location.href = "login.html";
+  }
+</script>
+</body>
+</html>
