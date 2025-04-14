@@ -205,17 +205,19 @@
         const subject = d.subject ? `<p class="mb-1"><strong>Subject:</strong> ${d.subject}</p>` : "";
         const phone = d.phone ? `<p class="mb-1"><strong>Phone:</strong> ${d.phone}</p>` : "";
         
-        const html = `
-  <div class="message-card">
+   const html = `
+  <div class="message-card" id="msg-${doc.id}">
     <h5>${d.name} <small class="text-muted">(${d.email})</small></h5>
     <p>${d.message}</p>
     <small class="text-muted">${d.timestamp?.toDate().toLocaleString() || ''}</small>
     <div class="d-flex justify-content-end gap-2 mt-2">
       <a href="view-message.html?id=${doc.id}" class="btn btn-sm btn-outline-dark">View</a>
+      <button onclick="deleteMessage('${doc.id}')" class="btn btn-sm btn-outline-danger">
+        <i class="ri-delete-bin-line"></i> Delete
+      </button>
     </div>
   </div>
 `;
-
         container.innerHTML += html;
       });
     }
