@@ -452,84 +452,48 @@
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
-    authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
-    projectId: "endless-grafix-admin-5fff7"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+    const firebaseConfig = {
+      apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
+      authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
+      projectId: "endless-grafix-admin-5fff7"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-  const id = new URLSearchParams(window.location.search).get("id");
-  const slug = new URLSearchParams(window.location.search).get("slug");
+    const blogContent = document.getElementById("blogContent");
+    const urlParams = new URLSearchParams(window.location.search);
+    const slug = urlParams.get("slug");
 
-  async function loadBlog() {
-    let doc;
-    if (id) {
-      doc = await db.collection("blogs").doc(id).get();
-    } else if (slug) {
-      const snap = await db.collection("blogs").where("slug", "==", slug).limit(1).get();
-      if (!snap.empty) doc = snap.docs[0];
-    }
+    if (!slug) {
+      blogContent.innerHTML = '<p class="text-danger text-center">Invalid blog URL</p>';
+    } else {
+      db.collection("blogs").where("slug", "==", slug).limit(1).get()
+        .then(snapshot => {
+          if (snapshot.empty) {
+            blogContent.innerHTML = '<p class="text-danger text-center">Blog not found</p>';
+            return;
+          }
 
-    if (!doc || !doc.exists) {
-      document.getElementById("blogTitle").innerText = "Blog not found.";
-      return;
-    }
+          const data = snapshot.docs[0].data();
+          const date = new Date(data.timestamp?.toDate()).toLocaleDateString();
 
-    const data = doc.data();
-    document.title = data.title + " | Endless Grafix";
-    document.getElementById("blogTitle").innerText = data.title;
-    document.getElementById("blogDate").innerText = new Date(data.timestamp?.toDate()).toLocaleDateString();
-    document.getElementById("blogImage").src = data.image;
-    document.getElementById("blogContent").innerHTML = data.content;
-    document.getElementById("blogTag").innerText = data.category || "Blog";
-  }
-
-  loadBlog(loadRelatedPosts(data.slug););
-    function loadRelatedPosts(currentSlug) {
-  db.collection("blogs")
-    .orderBy("timestamp", "desc")
-    .limit(4)
-    .get()
-    .then(snapshot => {
-      const container = document.getElementById("relatedPosts");
-      container.innerHTML = "";
-
-      let count = 0;
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        if (d.slug === currentSlug || count >= 3) return; // skip current post and limit to 3
-        const html = `
-        <div class="col-lg-4">
-          <div class="blog-card rounded-4 mb-lg-3 mb-md-5 mb-3">
-            <div class="blog-card__image position-relative">
-              <div class="zoom-img rounded-3 overflow-hidden">
-                <img class="w-100" src="${d.image}" alt="${d.title}" />
-                <a class="position-absolute bottom-0 start-0 m-3 text-white-keep btn btn-gradient fw-medium rounded-3 px-3 py-2" href="blog-details.html?slug=${d.slug}">
-                  ${d.category || "Blog"}
-                </a>
-                <a href="blog-details.html?slug=${d.slug}" class="blog-card__link position-absolute top-50 start-50 translate-middle icon-md icon-shape bg-linear-1 rounded-circle">
-                  <i class="ri-arrow-right-up-line text-dark"></i>
-                </a>
+          blogContent.innerHTML = `
+            <div class="col-lg-10">
+              <div class="text-center mb-5">
+                <div class="btn btn-gradient d-inline-block text-uppercase">${data.category || "Blog"}</div>
+                <h3 class="ds-3 mt-3 mb-4 text-dark">${data.title}</h3>
+                <p class="text-300 fs-6 mb-2">${date} • ${data.readTime || "3 min read"}</p>
               </div>
-            </div>
-            <div class="blog-card__content position-relative text-center mt-4">
-              <span class="blog-card__date fs-7">${new Date(d.timestamp?.toDate()).toLocaleDateString()}</span>
-              <h5 class="blog-card__title">${d.title}</h5>
-              <p class="blog-card__description fs-6">${d.content.replace(/<[^>]+>/g, '').substring(0, 100)}...</p>
-              <a href="blog-details.html?slug=${d.slug}" class="link-overlay position-absolute top-0 start-0 w-100 h-100"></a>
-            </div>
-          </div>
-        </div>
-        `;
-        container.innerHTML += html;
-        count++;
-      });
-    });
-}
-
-</script>
+              <img src="${data.image}" alt="${data.title}" class="img-fluid rounded-4 mb-5" />
+              <div class="text-300 fs-6">${data.content}</div>
+            </div>`;
+        })
+        .catch(err => {
+          console.error("Error loading blog:", err);
+          blogContent.innerHTML = '<p class="text-danger text-center">Something went wrong.</p>';
+        });
+    }
+  </script>
 
         
     </body>
