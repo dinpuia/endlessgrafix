@@ -14399,8 +14399,8 @@ strong {
 }
 
 .card__image.fixed-square {
-  width: 150px; /* Fixed square size */
-  height: 150px;
+  width: 50px; /* Fixed square size */
+  height: 50px;
   object-fit: cover;
   float: left; /* Align image to the left */
   margin-right: 20px; /* Add some space between the image and text */
