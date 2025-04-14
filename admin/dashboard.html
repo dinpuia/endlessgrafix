@@ -139,26 +139,37 @@
   </div>
   <div class="main-content">
     <h2 class="mb-4">Welcome back, Admin</h2>
-    <div class="row">
-      <div class="col-md-4 mb-4">
-        <div class="card p-3">
-          <h5>Total Portfolio</h5>
-          <p class="display-6" id="portfolioCount">0</p>
-        </div>
-      </div>
-      <div class="col-md-4 mb-4">
-        <div class="card p-3">
-          <h5>Total Messages</h5>
-          <p class="display-6">--</p>
-        </div>
-      </div>
-      <div class="col-md-4 mb-4">
-        <div class="card p-3">
-          <h5>Blog Posts</h5>
-          <p class="display-6">--</p>
-        </div>
-      </div>
+<div class="row g-4">
+  <div class="col-md-3 col-sm-6">
+    <div class="card p-4 text-white bg-primary d-flex flex-column align-items-start">
+      <div class="mb-2"><i class="ri-gallery-line fs-2"></i></div>
+      <h6>Total Portfolio</h6>
+      <h4 id="portfolioCount">0</h4>
     </div>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <div class="card p-4 text-white bg-success d-flex flex-column align-items-start">
+      <div class="mb-2"><i class="ri-mail-line fs-2"></i></div>
+      <h6>Total Messages</h6>
+      <h4>--</h4>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <div class="card p-4 text-white bg-info d-flex flex-column align-items-start">
+      <div class="mb-2"><i class="ri-article-line fs-2"></i></div>
+      <h6>Blog Posts</h6>
+      <h4>--</h4>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <div class="card p-4 text-white bg-dark d-flex flex-column align-items-start">
+      <div class="mb-2"><i class="ri-server-line fs-2"></i></div>
+      <h6>Storage Used</h6>
+      <h4>--</h4>
+    </div>
+  </div>
+</div>
+
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4>Recent Portfolio Uploads</h4>
       <a href="portfolio-upload.html" class="btn btn-primary">+ Add New</a>
