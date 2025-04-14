@@ -40,6 +40,18 @@
       background-color: #39373d;
       color: white;
     }
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 24px;
+      background: white;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      z-index: 1050;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     .main-content {
       margin-left: 250px;
       padding: 40px;
@@ -70,10 +82,7 @@
     transform: translateX(0) !important;
     opacity: 1 !important;
   }
-  .sidebar-toggle {
-    display: none !important;
-  }
-}
+
     @media (max-width: 768px) {
       #sidebar {
         width: 100%;
