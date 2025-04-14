@@ -14392,6 +14392,32 @@ strong {
 [data-bs-theme=dark] .mobile-header-wrapper-style .mobile-header-wrapper-inner .mobile-header-content-area .mobile-menu-wrap nav .mobile-menu li.has-children .menu-expand i {
   background: url(../imgs/template/icons/arrow-right-big-dark.svg) no-repeat center;
 }
+
+.card__image-container {
+  display: flex;
+  align-items: center;
+}
+
+.card__image.fixed-square {
+  width: 150px; /* Fixed square size */
+  height: 150px;
+  object-fit: cover;
+  float: left; /* Align image to the left */
+  margin-right: 20px; /* Add some space between the image and text */
+}
+
+.card__content.text-right {
+  text-align: right; /* Align text to the right */
+}
+
+.card-custom {
+  transition: transform 0.3s ease, opacity 0.3s ease; /* Add transition for zoom out and fade out */
+}
+
+.card-custom:hover {
+  transform: scale(0.95); /* Zoom out effect */
+  opacity: 0.8; /* Fade out effect */
+}
 /* Reduce the size of the logo */
 .navbar-brand img,
 .mobile-header-logo img {
