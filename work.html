@@ -405,85 +405,92 @@
         </main>
         <!-- prettier-ignore -->
 
-        <script type="module">
-            // Firebase imports (assumes you're using Firebase v9+ modular SDK)
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-            import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-          
-            const firebaseConfig = {
-              apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
-              authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
-              projectId: "endless-grafix-admin-5fff7",
-            };
-          
-            // Initialize Firebase
-            const app = initializeApp(firebaseConfig);
-            const db = getFirestore(app);
-          
-            // Reference to collection
-            const portfolioRef = collection(db, "portfolio");
-          
-            // Fetch and render cards
-            async function renderPortfolioCards() {
-              const querySnapshot = await getDocs(portfolioRef);
-              const container = document.getElementById("portfolio-container").innerHTML += generatedCardHTML;
-          
-              querySnapshot.forEach((doc, index) => {
-                const d = doc.data();
-          
-                const cardHTML = `
-          <div class="card-custom" data-index="${index}">
-  <div class="card__inner bg-6 p-lg-6 p-md-4 p-3">
-    <div class="card__image-container zoom-img position-relative">
-      <div style="width: 100%; max-width: 500px; aspect-ratio: 1 / 1; overflow: hidden;">
-  <img class="card__image w-100 h-100" src="${d.image}" alt="${d.title || 'Portfolio Image'}" style="object-fit: cover;" />
-</div>
-      <a href="work-single.html?id=${doc.id}" class="card-image-overlay position-absolute start-0 end-0 w-100 h-100"
-      ></a>
-    </div>
-    <div class="card__content px-md-4 px-3">
-      <div class="card__title d-md-flex align-items-center mb-0 mb-lg-2">
-        <a href="work-single.html?id=${doc.id}" class="card_title_link ">
-          <p class="text-primary mb-0 mb-md-2">${d.category || "Portfolio"}</p>
-          <h3 class="fw-semibold">${d.title}</h3>
-        </a>
-        <a href="work-single.html?id=${doc.id}" class="card-icon d-none d-md-inline-flex border text-dark border-dark icon-shape ms-auto icon-md rounded-circle">
-          <i class="ri-arrow-right-up-line"></i>
-        </a>
-      </div>
-      <p class="text-300 mb-lg-auto mb-md-4 mb-3"> ${(d.description || '').slice(0, 100)}... </p>
+       <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-      <!-- Optional Fields -->
-      ${d.client ? `
-        <div class="d-md-flex content">
-          <p class="mb-0 fs-7 text-dark text-uppercase w-40">Client</p>
-          <p class="mb-0 card__description text-300 fs-6">${d.client}</p>
-        </div>
-      ` : ""}
+  const firebaseConfig = {
+    apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
+    authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
+    projectId: "endless-grafix-admin-5fff7",
+  };
 
-      ${d.time ? `
-        <div class="d-md-flex content">
-          <p class="mb-0 fs-7 text-dark text-uppercase w-40">Completion Time</p>
-          <p class="mb-0 card__description text-300 fs-6">${d.time}</p>
-        </div>
-      ` : ""}
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const portfolioRef = collection(db, "portfolio");
 
-      ${d.tools ? `
-        <div class="d-md-flex content">
-          <p class="mb-0 fs-7 text-dark text-uppercase w-40">Tools</p>
-          <p class="mb-0 card__description text-300 fs-6">${d.tools}</p>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in-view");
+      }
+    });
+  }, {
+    threshold: 0.1,
+  });
+
+  async function renderPortfolioCards() {
+    const querySnapshot = await getDocs(portfolioRef);
+    const container = document.getElementById("portfolio-container");
+
+    querySnapshot.forEach((doc, index) => {
+      const d = doc.data();
+
+      const cardHTML = `
+        <div class="card-custom" data-index="${index}">
+          <div class="card__inner bg-6 p-lg-6 p-md-4 p-3">
+            <div class="card__image-container zoom-img position-relative">
+              <div style="width: 100%; max-width: 500px; aspect-ratio: 1 / 1; overflow: hidden;">
+                <img class="card__image w-100 h-100" src="${d.image}" alt="${d.title || 'Portfolio Image'}" style="object-fit: cover;" />
+              </div>
+              <a href="work-single.html?id=${doc.id}" class="card-image-overlay position-absolute start-0 end-0 w-100 h-100"></a>
+            </div>
+            <div class="card__content px-md-4 px-3">
+              <div class="card__title d-md-flex align-items-center mb-0 mb-lg-2">
+                <a href="work-single.html?id=${doc.id}" class="card_title_link">
+                  <p class="text-primary mb-0 mb-md-2">${d.category || "Portfolio"}</p>
+                  <h3 class="fw-semibold">${d.title}</h3>
+                </a>
+                <a href="work-single.html?id=${doc.id}" class="card-icon d-none d-md-inline-flex border text-dark border-dark icon-shape ms-auto icon-md rounded-circle">
+                  <i class="ri-arrow-right-up-line"></i>
+                </a>
+              </div>
+              <p class="text-300 mb-lg-auto mb-md-4 mb-3">${(d.description || '').slice(0, 100)}...</p>
+
+              ${d.client ? `
+                <div class="d-md-flex content">
+                  <p class="mb-0 fs-7 text-dark text-uppercase w-40">Client</p>
+                  <p class="mb-0 card__description text-300 fs-6">${d.client}</p>
+                </div>` : ""}
+
+              ${d.time ? `
+                <div class="d-md-flex content">
+                  <p class="mb-0 fs-7 text-dark text-uppercase w-40">Completion Time</p>
+                  <p class="mb-0 card__description text-300 fs-6">${d.time}</p>
+                </div>` : ""}
+
+              ${d.tools ? `
+                <div class="d-md-flex content">
+                  <p class="mb-0 fs-7 text-dark text-uppercase w-40">Tools</p>
+                  <p class="mb-0 card__description text-300 fs-6">${d.tools}</p>
+                </div>` : ""}
+            </div>
+          </div>
         </div>
-      ` : ""}
-    </div>
-  </div>
-</div> `;
-          
-                container.innerHTML += cardHTML;
-              });
-            }
-          
-            renderPortfolioCards();
-          </script>
+      `;
+
+      container.insertAdjacentHTML('beforeend', cardHTML);
+    });
+
+    // After all cards are added, observe them
+    document.querySelectorAll(".card-custom").forEach(el => {
+      observer.observe(el);
+    });
+  }
+
+  renderPortfolioCards();
+</script>
+
           
 
 
