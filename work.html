@@ -447,39 +447,21 @@
     <!-- Image Container -->
     <div class="card__image-container zoom-img position-relative">
       <img 
-        class="card__image fixed-square align-left"
-        src="${d.image}" 
-        alt="${d.title || 'Portfolio Image'}" 
-      />
-      <a 
-        href="work-single.html?id=${doc.id}" 
-        class="card-image-overlay position-absolute start-0 end-0 w-100 h-100"
+        class=""card__image" src="${d.image}" alt="${d.title || 'Portfolio Image'}"/>
+      <a href="work-single.html?id=${doc.id}" class="card-image-overlay position-absolute start-0 end-0 w-100 h-100"
       ></a>
     </div>
-
-    <!-- Content Section -->
-    <div class="card__content text-right px-md-4 px-3">
-      <!-- Title Section -->
+    <div class="card__content px-md-4 px-3">
       <div class="card__title d-md-flex align-items-center mb-0 mb-lg-2">
-        <a 
-          href="work-single.html?id=${doc.id}" 
-          class="card_title_link text-decoration-none"
-        >
+        <a href="work-single.html?id=${doc.id}" class="card_title_link ">
           <p class="text-primary mb-0 mb-md-2">${d.category || "Portfolio"}</p>
           <h3 class="fw-semibold">${d.title}</h3>
         </a>
-        <a 
-          href="work-single.html?id=${doc.id}" 
-          class="card-icon d-none d-md-inline-flex border text-dark border-dark icon-shape ms-auto icon-md rounded-circle"
-        >
+        <a href="work-single.html?id=${doc.id}" class="card-icon d-none d-md-inline-flex border text-dark border-dark icon-shape ms-auto icon-md rounded-circle">
           <i class="ri-arrow-right-up-line"></i>
         </a>
       </div>
-
-      <!-- Description -->
-      <p class="text-300 mb-lg-auto mb-md-4 mb-3">
-        ${(d.description || '').slice(0, 100)}...
-      </p>
+      <p class="text-300 mb-lg-auto mb-md-4 mb-3"> ${(d.description || '').slice(0, 100)}... </p>
 
       <!-- Optional Fields -->
       ${d.client ? `
