@@ -4,7 +4,8 @@
         <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta http-equiv="x-ua-compatible" content="ie=edge" />
-<title>Endless Grafix - Graphic Designer</title>
+<title>  <h1 id="siteTitle">Endless Grafix</h1> - <p id="siteTagline">Graphic Designer</p>
+</title>
 <script src="assets/js/vendors/color-modes.js"></script>
 <!-- Favicon icon-->
 <link rel="shortcut icon" type="image/x-icon" href="assets/imgs/template/favicon-gradient.svg" />
@@ -1193,6 +1194,32 @@
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
+    
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) {
+    window.location.href = "login.html";
+  }
+});
+
+     db.collection("settings").doc("main").get().then(doc => {
+    if (!doc.exists) return;
+
+    const s = doc.data();
+
+    // Set site logo
+    document.getElementById("logoImg").src = s.logo;
+
+    // Set title + tagline
+    document.getElementById("siteTitle").innerText = s.title;
+    document.getElementById("siteTagline").innerText = s.tagline;
+
+    // Set theme
+    document.documentElement.setAttribute("data-theme", s.theme || "light");
+
+    // Social links
+    document.getElementById("igLink").href = s.instagram;
+    document.getElementById("fbLink").href = s.facebook;
+  });
 
   document.getElementById("contactForm").addEventListener("submit", async (e) => {
     e.preventDefault();
