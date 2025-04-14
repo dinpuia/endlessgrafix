@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -6,20 +7,34 @@
   <link href="../assets/css/vendors/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet" />
   <style>
+    :root {
+      --bg-color: #f8f9fb;
+      --text-color: #000;
+      --card-bg: #fff;
+      --sidebar-bg: #1e1c1f;
+      --sidebar-text: #cfd8dc;
+    }
+    [data-theme="dark"] {
+      --bg-color: #121212;
+      --text-color: #fff;
+      --card-bg: #1e1e1e;
+      --sidebar-bg: #000;
+      --sidebar-text: #f0f0f0;
+    }
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f8f9fb;
-      color: #000;
+      background-color: var(--bg-color);
+      color: var(--text-color);
     }
     #sidebar {
       width: 250px;
-      background-color: #1e1c1f;
+      background-color: var(--sidebar-bg);
       height: 100vh;
       position: fixed;
       top: 0;
       left: 0;
       padding-top: 30px;
-      color: #cfd8dc;
+      color: var(--sidebar-text);
       transform: translateX(-100%);
       opacity: 0;
       transition: transform 0.3s ease, opacity 0.3s ease;
@@ -30,11 +45,10 @@
       opacity: 1;
     }
     #sidebar a {
-      color: #cfd8dc;
+      color: var(--sidebar-text);
       padding: 12px 20px;
       display: block;
       text-decoration: none;
-      font-size: 16px;
     }
     #sidebar a:hover, #sidebar .active {
       background-color: #39373d;
@@ -52,12 +66,22 @@
       cursor: pointer;
       z-index: 1050;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    #sidebar .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 20px;
+      color: white;
+      cursor: pointer;
+      display: none;
+    }
     .main-content {
       margin-left: 250px;
       padding: 40px;
     }
     .card {
-      background-color: #fff;
+      background-color: var(--card-bg);
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       padding: 1rem;
@@ -68,7 +92,7 @@
       padding: 15px;
       text-align: center;
       transition: 0.3s;
-      background: white;
+      background: var(--card-bg);
     }
     .portfolio-card:hover {
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -77,23 +101,23 @@
       max-height: 150px;
       object-fit: contain;
     }
-    @media (min-width: 769px) {
-  #sidebar {
-    transform: translateX(0) !important;
-    opacity: 1 !important;
-  }
-
     @media (max-width: 768px) {
       #sidebar {
         width: 100%;
         max-width: 280px;
       }
-      #sidebar .close-btn {
+      #sidebar.show .close-btn {
         display: block;
       }
       .main-content {
         margin-left: 0;
         padding: 80px 20px;
+      }
+      .sidebar-toggle {
+        display: block;
+      }
+      .sidebar-toggle.hide {
+        display: none;
       }
     }
   </style>
@@ -116,11 +140,13 @@
     <a href="#"><i class="ri-settings-3-line"></i> Settings</a>
     <a href="#" onclick="logout()"><i class="ri-logout-box-line"></i> Logout</a>
   </div>
+
   <div class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2>Portfolio List</h2>
       <a href="portfolio-upload.html" class="btn btn-primary">+ Add New</a>
     </div>
+
     <div class="row mb-4">
       <div class="col-md-6">
         <input type="text" class="form-control" id="searchInput" placeholder="Search by title or category...">
@@ -135,10 +161,12 @@
         </select>
       </div>
     </div>
+
     <div class="row" id="portfolioGrid">
-      <!-- Projects will be loaded here -->
+      <!-- Portfolio items will be injected here -->
     </div>
   </div>
+
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
   <script>
@@ -148,66 +176,68 @@
       projectId: "endless-grafix-admin-5fff7"
     };
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();function renderPortfolio(docs) {
-  const container = document.getElementById("portfolioGrid");
-  container.innerHTML = "";
-  docs.forEach(doc => {
-    const data = doc.data();
-    const html = `
-      <div class="col-md-4 mb-4">
-        <div class="portfolio-card">
-          <img src="${data.image}" alt="${data.title}" class="img-fluid mb-2">
-          <h5>${data.title}</h5>
-          <p class="mb-1"><strong>Category:</strong> ${data.category}</p>
-          <p class="mb-1"><strong>Service:</strong> ${data.service || "-"}</p>
-          <div class="d-flex justify-content-center gap-2 mt-2">
-            <a href="portfolio-edit.html?id=${doc.id}" class="btn btn-sm btn-outline-secondary">Edit</a>
-            <a href="work-single.html?id=${doc.id}" class="btn btn-sm btn-outline-dark">View</a>
+    const db = firebase.firestore();
+
+    let allDocs = [];
+
+    function renderPortfolio(docs) {
+      const container = document.getElementById("portfolioGrid");
+      container.innerHTML = "";
+      docs.forEach(doc => {
+        const data = doc.data();
+        const html = `
+          <div class="col-md-4 mb-4">
+            <div class="portfolio-card">
+              <img src="${data.image}" alt="${data.title}" class="img-fluid mb-2">
+              <h5>${data.title}</h5>
+              <p class="mb-1"><strong>Category:</strong> ${data.category}</p>
+              <p class="mb-1"><strong>Service:</strong> ${data.service || "-"}</p>
+              <div class="d-flex justify-content-center gap-2 mt-2">
+                <a href="portfolio-edit.html?id=${doc.id}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                <a href="work-single.html?id=${doc.id}" class="btn btn-sm btn-outline-dark">View</a>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    `;
-    container.innerHTML += html;
-  });
-}
+        `;
+        container.innerHTML += html;
+      });
+    }
 
-function fetchAndRender() {
-  db.collection("portfolio").orderBy("timestamp", "desc").get().then(snapshot => {
-    allDocs = snapshot.docs;
-    renderPortfolio(allDocs);
-  });
-}
+    function fetchAndRender() {
+      db.collection("portfolio").orderBy("timestamp", "desc").get().then(snapshot => {
+        allDocs = snapshot.docs;
+        renderPortfolio(allDocs);
+      });
+    }
 
-let allDocs = [];
-fetchAndRender();
+    document.getElementById("searchInput").addEventListener("input", function () {
+      const keyword = this.value.toLowerCase();
+      const filtered = allDocs.filter(doc => {
+        const d = doc.data();
+        return d.title.toLowerCase().includes(keyword) || d.category.toLowerCase().includes(keyword);
+      });
+      renderPortfolio(filtered);
+    });
 
-document.getElementById("searchInput").addEventListener("input", function () {
-  const keyword = this.value.toLowerCase();
-  const filtered = allDocs.filter(doc => {
-    const d = doc.data();
-    return d.title.toLowerCase().includes(keyword) || d.category.toLowerCase().includes(keyword);
-  });
-  renderPortfolio(filtered);
-});
+    document.getElementById("categoryFilter").addEventListener("change", function () {
+      const selected = this.value;
+      const filtered = selected
+        ? allDocs.filter(doc => doc.data().category === selected)
+        : allDocs;
+      renderPortfolio(filtered);
+    });
 
-document.getElementById("categoryFilter").addEventListener("change", function () {
-  const selected = this.value;
-  const filtered = selected
-    ? allDocs.filter(doc => doc.data().category === selected)
-    : allDocs;
-  renderPortfolio(filtered);
-});
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('show');
+      document.getElementById('menuToggle').classList.toggle('hide');
+    }
 
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('show');
-  document.getElementById('menuToggle').classList.toggle('hide');
-}
+    function logout() {
+      alert("Logging out...");
+      window.location.href = "login.html";
+    }
 
-function logout() {
-  alert("Logging out...");
-  window.location.href = "login.html";
-}
-
+    fetchAndRender();
   </script>
 </body>
 </html>
