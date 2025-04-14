@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>View Message | Endless Grafix</title>
+  <link href="../assets/css/vendors/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-color: #f8f9fb;
+      --text-color: #000;
+      --card-bg: #fff;
+      --sidebar-bg: #1e1c1f;
+      --sidebar-text: #cfd8dc;
+    }
+    [data-theme="dark"] {
+      --bg-color: #121212;
+      --text-color: #fff;
+      --card-bg: #1e1e1e;
+      --sidebar-bg: #000;
+      --sidebar-text: #f0f0f0;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+    #sidebar {
+      width: 250px;
+      background-color: var(--sidebar-bg);
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding-top: 30px;
+      color: var(--sidebar-text);
+      transform: translateX(-100%);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 1040;
+    }
+    #sidebar.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    #sidebar a {
+      color: var(--sidebar-text);
+      padding: 12px 20px;
+      display: block;
+      text-decoration: none;
+    }
+    #sidebar a:hover, #sidebar .active {
+      background-color: #39373d;
+      color: white;
+    }
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 24px;
+      background: white;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      z-index: 1050;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .main-content {
+      margin-left: 250px;
+      padding: 40px;
+    }
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    .badge-unread {
+      background-color: #28a745;
+      color: white;
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 6px;
+      margin-left: 10px;
+    }
+    .action-buttons {
+      margin-top: 1rem;
+    }
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+    .toast {
+      padding: 10px 20px;
+      background: #333;
+      color: white;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    @media (max-width: 768px) {
+      #sidebar {
+        width: 100%;
+        max-width: 280px;
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 80px 20px;
+      }
+      .sidebar-toggle {
+        display: block;
+      }
+    }
+    @media (min-width: 769px) {
+      #sidebar {
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+      }
+      .sidebar-toggle {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar-toggle text-dark" id="menuToggle" onclick="toggleSidebar()">
+  <i class="ri-menu-line"></i>
+</div>
+
+<div id="sidebar">
+  <div class="close-btn" onclick="toggleSidebar()">
+    <i class="ri-close-line"></i>
+  </div>
+  <h4 class="text-center mb-4">Endless Grafix</h4>
+  <a href="dashboard.html"><i class="ri-dashboard-line"></i> Dashboard</a>
+  <a href="portfolio-upload.html"><i class="ri-upload-2-line"></i> Upload Portfolio</a>
+  <a href="portfolio-list.html"><i class="ri-file-list-line"></i> Portfolio List</a>
+  <a href="#"><i class="ri-briefcase-line"></i> Projects</a>
+  <a href="#"><i class="ri-article-line"></i> Blog</a>
+  <a href="messages.html"><i class="ri-mail-line"></i> Messages</a>
+  <a href="#"><i class="ri-settings-3-line"></i> Settings</a>
+  <a href="#" onclick="logout()"><i class="ri-logout-box-line"></i> Logout</a>
+</div>
+
+<div class="main-content">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>View Message <span id="readBadge"></span></h2>
+    <a href="messages.html" class="btn btn-secondary">← Back to Messages</a>
+  </div>
+
+  <div class="card">
+    <h4 id="name"></h4>
+    <p class="mb-1"><strong>Email:</strong> <span id="email"></span></p>
+    <p class="mb-1"><strong>Phone:</strong> <span id="phone"></span></p>
+    <p class="mb-1"><strong>Subject:</strong> <span id="subject"></span></p>
+    <p><strong>Message:</strong></p>
+    <p id="message" class="mb-3"></p>
+    <small class="text-muted" id="timestamp"></small>
+
+    <div class="action-buttons mt-4">
+      <button onclick="window.print()" class="btn btn-outline-dark me-2">
+        <i class="ri-printer-line"></i> Print
+      </button>
+      <button onclick="deleteMessage()" class="btn btn-outline-danger">
+        <i class="ri-delete-bin-line"></i> Delete
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notification container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
+    authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
+    projectId: "endless-grafix-admin-5fff7"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const id = new URLSearchParams(window.location.search).get("id");
+  if (!id) location.href = "messages.html";
+
+  const docRef = db.collection("messages").doc(id);
+  docRef.get().then(doc => {
+    if (!doc.exists) return showToast("Message not found.");
+    const d = doc.data();
+    document.getElementById("name").textContent = d.name;
+    document.getElementById("email").textContent = d.email;
+    document.getElementById("phone").textContent = d.phone || "-";
+    document.getElementById("subject").textContent = d.subject || "-";
+    document.getElementById("message").textContent = d.message;
+    document.getElementById("timestamp").textContent = d.timestamp?.toDate().toLocaleString() || "";
+
+    if (!d.read) {
+      document.getElementById("readBadge").innerHTML = '<span class="badge-unread">Unread</span>';
+      docRef.update({ read: true });
+    }
+  });
+
+  function deleteMessage() {
+    if (!confirm("Are you sure you want to delete this message?")) return;
+    docRef.delete().then(() => {
+      showToast("Message deleted.");
+      setTimeout(() => window.location.href = "messages.html", 1200);
+    }).catch(err => {
+      showToast("Delete failed: " + err.message);
+    });
+  }
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('show');
+    document.getElementById('menuToggle').classList.toggle('hide');
+  }
+
+  function logout() {
+    alert("Logging out...");
+    window.location.href = "login.html";
+  }
+
+  function showToast(msg) {
+    const container = document.getElementById("toastContainer");
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.innerText = msg;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+</script>
+
+</body>
+</html>
