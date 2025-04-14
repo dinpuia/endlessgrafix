@@ -95,6 +95,16 @@
       cursor: pointer;
       display: none;
     }
+
+    @media (min-width: 769px) {
+  #sidebar {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+  }
+  .sidebar-toggle {
+    display: none !important;
+  }
+}
     @media (max-width: 768px) {
       #sidebar {
         width: 100%;
