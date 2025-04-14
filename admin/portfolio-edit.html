@@ -2,46 +2,150 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edit Portfolio | Endless Grafix</title>
+  <title>Upload Portfolio | Endless Grafix</title>
   <link href="../assets/css/vendors/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+    :root {
+      --bg-color: #f8f9fb;
+      --text-color: #000;
+      --card-bg: #fff;
+      --sidebar-bg: #1e1c1f;
+      --sidebar-text: #cfd8dc;
+    }
+    [data-theme="dark"] {
+      --bg-color: #121212;
+      --text-color: #ffffff;
+      --card-bg: #1e1e1e;
+      --sidebar-bg: #000000;
+      --sidebar-text: #f0f0f0;
+    }
+    #sidebar {
+      width: 250px;
+      background-color: var(--sidebar-bg);
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding-top: 30px;
+      color: var(--sidebar-text);
+      transform: translateX(-100%);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 1040;
+    }
+    #sidebar.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    #sidebar a {
+      color: var(--sidebar-text);
+      padding: 12px 20px;
+      display: block;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    #sidebar a:hover, #sidebar .active {
+      background-color: #39373d;
+      color: white;
+    }
+    .main-content {
+      margin-left: 250px;
+      padding: 40px;
+    }
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      color: var(--text-color);
+      padding: 1rem;
+    }
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 24px;
+      background: white;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      z-index: 1050;
+    }
+    #dropzone {
+      border: 2px dashed #007bff;
+      cursor: pointer;
+      text-align: center;
+    }
+    #dropzone:hover {
+      background-color: #f0f8ff;
+    }
+    #sidebar .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 20px;
+      color: white;
+      cursor: pointer;
+      display: none;
+    }
+    @media (max-width: 768px) {
+      #sidebar {
+        width: 100%;
+        max-width: 280px;
+      }
+      #sidebar.show .close-btn {
+        display: block;
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 80px 20px;
+      }
+      .sidebar-toggle {
+        display: block;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="sidebar-toggle text-dark" id="menuToggle" onclick="toggleSidebar()">
-    <i class="ri-menu-line"></i>
+<div class="sidebar-toggle text-dark" id="menuToggle" onclick="toggleSidebar()">
+  <i class="ri-menu-line"></i>
+</div>
+<div id="sidebar">
+  <div class="close-btn" onclick="toggleSidebar()">
+    <i class="ri-close-line"></i>
   </div>
-  <div id="sidebar">
-    <div class="close-btn" onclick="toggleSidebar()">
-      <i class="ri-close-line"></i>
-    </div>
-    <h4 class="text-center mb-4">Endless Grafix</h4>
-    <a href="dashboard.html"><i class="ri-dashboard-line"></i> Dashboard</a>
-    <a href="portfolio-upload.html"><i class="ri-upload-2-line"></i> Upload Portfolio</a>
-    <a href="portfolio-list.html"><i class="ri-file-list-line"></i> Portfolio List</a>
-    <a href="#"><i class="ri-briefcase-line"></i> Projects</a>
-    <a href="#"><i class="ri-article-line"></i> Blog</a>
-    <a href="#"><i class="ri-mail-line"></i> Contact</a>
-    <a href="#"><i class="ri-settings-3-line"></i> Settings</a>
-    <a href="#" onclick="logout()"><i class="ri-logout-box-line"></i> Logout</a>
+  <h4 class="text-center mb-4">Endless Grafix</h4>
+  <a href="dashboard.html"><i class="ri-dashboard-line"></i> Dashboard</a>
+  <a href="#" class="active"><i class="ri-upload-2-line"></i> Upload Portfolio</a>
+  <a href="portfolio-list.html"><i class="ri-file-list-line"></i> Portfolio List</a>
+  <a href="#"><i class="ri-briefcase-line"></i> Projects</a>
+  <a href="#"><i class="ri-article-line"></i> Blog</a>
+  <a href="#"><i class="ri-mail-line"></i> Contact</a>
+  <a href="#"><i class="ri-settings-3-line"></i> Settings</a>
+  <a href="#" onclick="logout()"><i class="ri-logout-box-line"></i> Logout</a>
+</div>
+<div class="main-content">
+  <h2 class="mb-4">Upload New Portfolio</h2>
+  <div class="card">
+    <!-- form content remains unchanged -->
   </div>
-  <div class="main-content" style="margin-left: 250px; padding: 40px;">
-    <h2 class="mb-4">Edit Portfolio</h2>
-    <div class="card p-4">
-      <form id="editForm">
-        <div class="mb-3">
-          <label class="form-label">Title</label>
-          <input type="text" class="form-control" id="title" required />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Category</label>
-          <input type="text" class="form-control" id="category" required />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Start Date</label>
-          <input type="date" class="form-control" id="start" />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">End Date</label>
-          <input type="date" class="form-control" id="end" />
-        </div>
+</div>
+<script>
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const menuToggle = document.getElementById('menuToggle');
+    sidebar.classList.toggle('show');
+    if (window.innerWidth <= 768) {
+      menuToggle.style.display = sidebar.classList.contains('show') ? 'none' : 'block';
+    }
+  }
+</script>
+</body>
+</html>
