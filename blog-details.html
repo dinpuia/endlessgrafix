@@ -238,97 +238,18 @@
 
 <!-- blog list -->
 <section class="section-blog-list">
-    <div class="container border-top pt-80 pb-80">
-        <div class="row">
-            <div class="d-md-flex align-items-center">
-                <h1 class="text-300">Related posts</h1>
-                <a href="#" class="btn btn-gradient ms-auto">
-                    View more
-                    <i class="ri-arrow-right-line"></i>
-                </a>
-            </div>
-        </div>
-        <div class="row mt-8">
-            <!--prettier-ignore-->
-            <div class="col-lg-4">
-    <div class="blog-card rounded-4 mb-lg-3 mb-md-5 mb-3">
-        <div class="blog-card__image position-relative">
-            <div class="zoom-img rounded-3 overflow-hidden">
-                <img class="w-100" src="assets/imgs/services-list/img-1.png" alt="zelio" />
-                <a class="position-absolute bottom-0 start-0 m-3 text-white-keep btn btn-gradient fw-medium rounded-3 px-3 py-2" href="blog-details.html">@@tag</a>
-                <a href="blog-details.html" class="blog-card__link position-absolute top-50 start-50 translate-middle icon-md icon-shape bg-linear-1 rounded-circle">
-                    <i class="ri-arrow-right-up-line text-dark"></i>
-                </a>
-            </div>
-        </div>
-        <div class="blog-card__content position-relative text-center mt-4">
-            <span class="blog-card__date fs-7">@@date</span>
-            <h5 class="blog-card__title">Logo Design</h5>
-            <p class="blog-card__description fs-6">@@description</p>
-            <a href="blog-details.html" class="link-overlay position-absolute top-0 start-0 w-100 h-100"></a>
-        </div>
+  <div class="container border-top pt-80 pb-80">
+    <div class="d-md-flex align-items-center mb-5">
+      <h1 class="text-300">Related posts</h1>
+      <a href="blog.html" class="btn btn-gradient ms-auto">
+        View more
+        <i class="ri-arrow-right-line"></i>
+      </a>
     </div>
-</div>
-<div class="col-lg-4">
-    <div class="blog-card rounded-4 mb-lg-3 mb-md-5 mb-3">
-        <div class="blog-card__image position-relative">
-            <div class="zoom-img rounded-3 overflow-hidden">
-                <img class="w-100" src="assets/imgs/services-list/img-2.png" alt="zelio" />
-                <a class="position-absolute bottom-0 start-0 m-3 text-white-keep btn btn-gradient fw-medium rounded-3 px-3 py-2" href="blog-details.html">@@tag</a>
-                <a href="blog-details.html" class="blog-card__link position-absolute top-50 start-50 translate-middle icon-md icon-shape bg-linear-1 rounded-circle">
-                    <i class="ri-arrow-right-up-line text-dark"></i>
-                </a>
-            </div>
-        </div>
-        <div class="blog-card__content position-relative text-center mt-4">
-            <span class="blog-card__date fs-7">@@date</span>
-            <h5 class="blog-card__title">Flyers / Poster Design</h5>
-            <p class="blog-card__description fs-6">@@description</p>
-            <a href="blog-details.html" class="link-overlay position-absolute top-0 start-0 w-100 h-100"></a>
-        </div>
+    <div class="row mt-4" id="relatedPosts">
+      <!-- Related blog cards will be injected here -->
     </div>
-</div>
-<div class="col-lg-4">
-    <div class="blog-card rounded-4 mb-lg-3 mb-md-5 mb-3">
-        <div class="blog-card__image position-relative">
-            <div class="zoom-img rounded-3 overflow-hidden">
-                <img class="w-100" src="assets/imgs/services-list/img-3.png" alt="zelio" />
-                <a class="position-absolute bottom-0 start-0 m-3 text-white-keep btn btn-gradient fw-medium rounded-3 px-3 py-2" href="blog-details.html">@@tag</a>
-                <a href="blog-details.html" class="blog-card__link position-absolute top-50 start-50 translate-middle icon-md icon-shape bg-linear-1 rounded-circle">
-                    <i class="ri-arrow-right-up-line text-dark"></i>
-                </a>
-            </div>
-        </div>
-        <div class="blog-card__content position-relative text-center mt-4">
-            <span class="blog-card__date fs-7">@@date</span>
-            <h5 class="blog-card__title">Brand Identity Design</h5>
-            <p class="blog-card__description fs-6">@@description</p>
-            <a href="blog-details.html" class="link-overlay position-absolute top-0 start-0 w-100 h-100"></a>
-        </div>
-    </div>
-</div>
-<div class="col-lg-4">
-    <div class="blog-card rounded-4 mb-lg-3 mb-md-5 mb-3">
-        <div class="blog-card__image position-relative">
-            <div class="zoom-img rounded-3 overflow-hidden">
-                <img class="w-100" src="assets/imgs/services-list/img-4.png" alt="zelio" />
-                <a class="position-absolute bottom-0 start-0 m-3 text-white-keep btn btn-gradient fw-medium rounded-3 px-3 py-2" href="blog-details.html">@@tag</a>
-                <a href="blog-details.html" class="blog-card__link position-absolute top-50 start-50 translate-middle icon-md icon-shape bg-linear-1 rounded-circle">
-                    <i class="ri-arrow-right-up-line text-dark"></i>
-                </a>
-            </div>
-        </div>
-        <div class="blog-card__content position-relative text-center mt-4">
-            <span class="blog-card__date fs-7">@@date</span>
-            <h5 class="blog-card__title">Photo Restoration</h5>
-            <p class="blog-card__description fs-6">@@description</p>
-            <a href="blog-details.html" class="link-overlay position-absolute top-0 start-0 w-100 h-100"></a>
-        </div>
-    </div>
-</div>
-
-        </div>
-    </div>
+  </div>
 </section>
 
             <!--Static 1-->
@@ -524,6 +445,7 @@
 <script src="assets/js/vendors/aat.min.js"></script>
 <!-- Theme JS -->
 <script src="assets/js/main.js"></script>
+        
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
@@ -564,7 +486,49 @@
     document.getElementById("blogTag").innerText = data.category || "Blog";
   }
 
-  loadBlog();
+  loadBlog(loadRelatedPosts(data.slug););
+    function loadRelatedPosts(currentSlug) {
+  db.collection("blogs")
+    .orderBy("timestamp", "desc")
+    .limit(4)
+    .get()
+    .then(snapshot => {
+      const container = document.getElementById("relatedPosts");
+      container.innerHTML = "";
+
+      let count = 0;
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        if (d.slug === currentSlug || count >= 3) return; // skip current post and limit to 3
+        const html = `
+        <div class="col-lg-4">
+          <div class="blog-card rounded-4 mb-lg-3 mb-md-5 mb-3">
+            <div class="blog-card__image position-relative">
+              <div class="zoom-img rounded-3 overflow-hidden">
+                <img class="w-100" src="${d.image}" alt="${d.title}" />
+                <a class="position-absolute bottom-0 start-0 m-3 text-white-keep btn btn-gradient fw-medium rounded-3 px-3 py-2" href="blog-details.html?slug=${d.slug}">
+                  ${d.category || "Blog"}
+                </a>
+                <a href="blog-details.html?slug=${d.slug}" class="blog-card__link position-absolute top-50 start-50 translate-middle icon-md icon-shape bg-linear-1 rounded-circle">
+                  <i class="ri-arrow-right-up-line text-dark"></i>
+                </a>
+              </div>
+            </div>
+            <div class="blog-card__content position-relative text-center mt-4">
+              <span class="blog-card__date fs-7">${new Date(d.timestamp?.toDate()).toLocaleDateString()}</span>
+              <h5 class="blog-card__title">${d.title}</h5>
+              <p class="blog-card__description fs-6">${d.content.replace(/<[^>]+>/g, '').substring(0, 100)}...</p>
+              <a href="blog-details.html?slug=${d.slug}" class="link-overlay position-absolute top-0 start-0 w-100 h-100"></a>
+            </div>
+          </div>
+        </div>
+        `;
+        container.innerHTML += html;
+        count++;
+      });
+    });
+}
+
 </script>
 
         
