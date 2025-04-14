@@ -1152,36 +1152,77 @@
                 <div class="position-relative">
                     <div class="position-relative z-2">
                         <h3>Leave a messge</h3>
-                        <form action="#">
-                            <div class="row mt-3">
-                                <div class="col-md-6 ">
-                                    <label class="mb-1 mt-3 text-dark" for="name">Your name <span class="text-primary">*</span></label>
-                                    <input type="text" class="form-control border rounded-3" id="name" name="name" placeholder="John Doe" aria-label="username" />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="mb-1 mt-3 text-dark" for="email">Email address <span class="text-primary">*</span></label>
-                                    <input type="text" class="form-control border rounded-3" id="email" name="email" placeholder="contact.john@gmail.com" aria-label="email" />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="mb-1 mt-3 text-dark" for="phone">Your phone <span class="text-primary">*</span></label>
-                                    <input type="text" class="form-control border rounded-3" id="phone" name="phone" placeholder="+01 234 567 89" aria-label="phone" />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="mb-1 mt-3 text-dark" for="subject">Subject <span class="text-primary">*</span></label>
-                                    <input type="text" class="form-control border rounded-3" id="subject" name="subject" placeholder="I want to contact for...." aria-label="subject" />
-                                </div>
-                                <div class="col-12">
-                                    <label class="mb-1 mt-3 text-dark" for="message">Message <span class="text-primary">*</span></label>
-                                    <textarea class="form-control border rounded-3 pb-10" id="message" name="message" placeholder="Your message here...." aria-label="With textarea"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <button type="submit" class="btn btn-gradient mt-3">
-                                        Send Message
-                                        <i class="ri-arrow-right-up-line"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+
+<form id="contactForm">
+  <div class="row mt-3">
+    <div class="col-md-6">
+      <label class="mb-1 mt-3 text-dark" for="name">Your name <span class="text-primary">*</span></label>
+      <input type="text" class="form-control border rounded-3" id="name" name="name" placeholder="John Doe" required />
+    </div>
+    <div class="col-md-6">
+      <label class="mb-1 mt-3 text-dark" for="email">Email address <span class="text-primary">*</span></label>
+      <input type="email" class="form-control border rounded-3" id="email" name="email" placeholder="contact.john@gmail.com" required />
+    </div>
+    <div class="col-md-6">
+      <label class="mb-1 mt-3 text-dark" for="phone">Your phone <span class="text-primary">*</span></label>
+      <input type="text" class="form-control border rounded-3" id="phone" name="phone" placeholder="+01 234 567 89" />
+    </div>
+    <div class="col-md-6">
+      <label class="mb-1 mt-3 text-dark" for="subject">Subject <span class="text-primary">*</span></label>
+      <input type="text" class="form-control border rounded-3" id="subject" name="subject" placeholder="I want to contact for...." />
+    </div>
+    <div class="col-12">
+      <label class="mb-1 mt-3 text-dark" for="message">Message <span class="text-primary">*</span></label>
+      <textarea class="form-control border rounded-3 pb-10" id="message" name="message" placeholder="Your message here...." required></textarea>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-gradient mt-3">
+        Send Message <i class="ri-arrow-right-up-line"></i>
+      </button>
+    </div>
+  </div>
+</form>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
+    authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
+    projectId: "endless-grafix-admin-5fff7"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  document.getElementById("contactForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const subject = document.getElementById("subject").value.trim();
+    const message = document.getElementById("message").value.trim();
+
+    if (!name || !email || !message) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    await db.collection("messages").add({
+      name,
+      email,
+      phone,
+      subject,
+      message,
+      read: false,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    alert("Message sent successfully!");
+    document.getElementById("contactForm").reset();
+  });
+</script>
+                       
                     </div>
                     <div class="z-0 bg-primary-dark rectangle-bg z-1 rounded-3"></div>
                 </div>
