@@ -206,17 +206,16 @@
         const phone = d.phone ? `<p class="mb-1"><strong>Phone:</strong> ${d.phone}</p>` : "";
         
         const html = `
-          <div class="message-card" id="msg-${doc.id}">
-            ${badge}
-            <h5>${d.name} <small class="text-muted">(${d.email})</small></h5>
-            ${phone}
-            ${subject}
-            <p>${d.message}</p>
-            <small class="text-muted">${date}</small>
-            <div class="delete-btn" onclick="deleteMessage('${doc.id}')">
-              <i class="ri-delete-bin-line"></i> Delete
-            </div>
-          </div>
+  <div class="message-card">
+    <h5>${d.name} <small class="text-muted">(${d.email})</small></h5>
+    <p>${d.message}</p>
+    <small class="text-muted">${d.timestamp?.toDate().toLocaleString() || ''}</small>
+    <div class="d-flex justify-content-end gap-2 mt-2">
+      <a href="view-message.html?id=${doc.id}" class="btn btn-sm btn-outline-dark">View</a>
+    </div>
+  </div>
+`;
+
         `;
         container.innerHTML += html;
       });
