@@ -54,6 +54,14 @@
       background-color: #39373d;
       color: white;
     }
+    #sidebar .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 20px;
+      color: white;
+      cursor: pointer;
+    }
     .sidebar-toggle {
       display: none;
       position: fixed;
@@ -88,64 +96,30 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
     .blog-card img {
-  width: 100%; /* Ensures the image takes the full width of the card */
-  max-height: 180px; /* Increases the height of the image */
-  object-fit: cover; /* Ensures the image maintains its aspect ratio */
-  border-radius: 6px;
-  margin-bottom: 1rem; /* Adds space below the image */
-}
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 1rem;
     }
-
-/* Blog card image for larger size and responsive layout */
-
-
-.blog-card img {
-  width: 100%; /* Ensures the image takes the full width of the card */
-  max-height: 200px; /* Increases the height for more visibility */
-  object-fit: cover; /* Ensures the image maintains its aspect ratio */
-  border-radius: 6px; /* Rounded corners for a modern look */
-  margin-bottom: 1rem; /* Adds space below the image */
-}
-
-/* Adjusting the layout for mobile views */
-@media (max-width: 768px) {
-  #sidebar {
-    width: 100%;
-    max-width: 280px;
-  }
-
-  .main-content {
-
-    margin-left: 0;
-    padding: 30px;
-  }
-
-  .blog-card {
-    margin-bottom: 20px; /* Adds spacing between cards */
-    border-radius: 8px; /* Reduces the border radius for a cleaner look */
-  }
-
-  .blog-card img {
-    max-height: 150px; /* Reduces the height of the images for smaller screens */
-  }
-
-  .card h5, .card p {
-    font-size: 0.9rem; /* Adjusts text size for better readability */
-  }
-
-  .sidebar-toggle {
-    display: block; /* Ensure the toggle button is visible */
-  }
-}
-
-
-    @media (min-width: 769px) {
+    @media (max-width: 768px) {
       #sidebar {
-        transform: translateX(0) !important;
-        opacity: 1 !important;
+        width: 100%;
+        max-width: 280px;
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 20px;
+      }
+      .blog-card {
+        margin-bottom: 20px;
+        border-radius: 8px;
+      }
+      .blog-card img {
+        max-height: 150px;
       }
       .sidebar-toggle {
-        display: none !important;
+        display: block;
       }
     }
   </style>
@@ -163,7 +137,7 @@
   <h4 class="text-center mb-4">Endless Grafix</h4>
   <a href="dashboard.html"><i class="ri-dashboard-line"></i> Dashboard</a>
   <a href="portfolio-upload.html"><i class="ri-upload-2-line"></i> Upload Portfolio</a>
-  <a href="blog-list.html" class="active"><i class="ri-article-line"></i> Blog List</a>
+  <a href="#" class="active"><i class="ri-article-line"></i> Blog List</a>
   <a href="portfolio-list.html"><i class="ri-file-list-line"></i> Portfolio List</a>
   <a href="messages.html"><i class="ri-mail-line"></i> Messages</a>
   <a href="settings.html"><i class="ri-settings-3-line"></i> Settings</a>
@@ -171,19 +145,12 @@
 </div>
 
 <div class="main-content">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Blog Posts</h2>
-    <input type="text" class="form-control w-50" id="searchInput" placeholder="Search">
+  <div class="d-flex justify-content-between align-items-center mb-4 mt-5">
+    <h4 class="mb-0">All Blog Posts</h4>
+    <a href="blog-upload.html" class="btn btn-primary">
+      <i class="ri-add-line"></i> Create New Blog
+    </a>
   </div>
-<div class="d-flex justify-content-between align-items-center mb-4 mt-5">
-  <h4 class="mb-0">All Blog Posts</h4>
-  
-</div>
-<a href="blog-upload.html"
-   class="btn btn-primary position-fixed bottom-0 end-0 m-4 shadow rounded-circle"
-   style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
-   <i class="ri-add-line fs-4"></i>
-</a>
   <div class="row" id="blogGrid">
     <!-- Blogs will render here -->
   </div>
@@ -202,35 +169,35 @@
 
   let allBlogs = [];
 
- function renderBlogs(docs) {
-  const container = document.getElementById("blogGrid");
-  container.innerHTML = "";
-  if (docs.length === 0) {
-    container.innerHTML = `<p class="text-muted">No blog posts found.</p>`;
-    return;
-  }
+  function renderBlogs(docs) {
+    const container = document.getElementById("blogGrid");
+    container.innerHTML = "";
+    if (docs.length === 0) {
+      container.innerHTML = `<p class="text-muted">No blog posts found.</p>`;
+      return;
+    }
 
-  docs.forEach(doc => {
-    const d = doc.data();
-    const date = d.timestamp?.toDate().toLocaleDateString() || '';
-    const html = `
-      <div class="col-md-4 mb-4" id="blog-${doc.id}">
-        <div class="blog-card">
-          <img src="${d.image}" class="img-fluid mb-3" style="width: 100%; border-radius: 10px;" />
-          <h5>${d.title}</h5>
-          <p class="mb-1"><strong>Slug:</strong> ${d.slug}</p>
-          <p><small class="text-muted">${date}</small></p>
-          <div class="d-flex justify-content-center gap-2 mt-2">
-            <a href="blog-edit.html?id=${doc.id}" class="btn btn-sm btn-primary">Edit</a>
-            <a href="blog-view.html?id=${doc.id}" class="btn btn-sm btn-info">View</a>
-            <button onclick="deleteBlog('${doc.id}')" class="btn btn-sm btn-danger">Delete</button>
+    docs.forEach(doc => {
+      const d = doc.data();
+      const date = d.timestamp?.toDate().toLocaleDateString() || '';
+      const html = `
+        <div class="col-md-4 mb-4" id="blog-${doc.id}">
+          <div class="blog-card">
+            <img src="${d.image}" class="img-fluid mb-3" />
+            <h5>${d.title}</h5>
+            <p class="mb-1"><strong>Slug:</strong> ${d.slug}</p>
+            <p><small class="text-muted">${date}</small></p>
+            <div class="d-flex justify-content-center gap-2 mt-2">
+              <a href="blog-edit.html?id=${doc.id}" class="btn btn-sm btn-primary">Edit</a>
+              <a href="blog-view.html?id=${doc.id}" class="btn btn-sm btn-info">View</a>
+              <button onclick="deleteBlog('${doc.id}')" class="btn btn-sm btn-danger">Delete</button>
+            </div>
           </div>
         </div>
-      </div>
-    `;
-    container.innerHTML += html;
-  });
-}
+      `;
+      container.innerHTML += html;
+    });
+  }
 
   function fetchBlogs() {
     db.collection("blogs").orderBy("timestamp", "desc").get().then(snapshot => {
@@ -246,18 +213,15 @@
     }).catch(err => alert("Delete failed: " + err.message));
   }
 
-  document.getElementById("searchInput").addEventListener("input", function () {
-    const keyword = this.value.toLowerCase();
-    const filtered = allBlogs.filter(doc => {
-      const d = doc.data();
-      return d.title.toLowerCase().includes(keyword) || d.slug.toLowerCase().includes(keyword);
-    });
-    renderBlogs(filtered);
-  });
-
   function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('show');
-    document.getElementById('menuToggle').classList.toggle('hide');
+    const sidebar = document.getElementById('sidebar');
+    const menuToggle = document.getElementById('menuToggle');
+    sidebar.classList.toggle('show');
+    if (sidebar.classList.contains('show')) {
+      menuToggle.style.display = 'none';
+    } else {
+      menuToggle.style.display = 'block';
+    }
   }
 
   function logout() {
