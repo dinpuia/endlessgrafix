@@ -75,6 +75,18 @@
       display: none;
     }
 
+  @media (max-width: 768px) {
+    /* Add space between cards for mobile view */
+    .card2 {
+      margin-bottom: 15px; /* Adjust spacing as needed */
+      border-radius: 8px; /* Reduced border radius for mobile view */
+    }
+
+    .row2.g-4 {
+      gap: 20px; /* Adds spacing between rows in mobile view */
+    }
+  }
+
 @media (min-width: 769px) {
   #sidebar {
     transform: translateX(0) !important;
@@ -223,10 +235,10 @@
           <td>${d.category}</td>
           <td>${date}</td>
          <td>
-  <a href="portfolio-edit.html?id=${doc.id}" class="btn btn-sm btn-primary me-2" style="border-radius: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+  <a href="portfolio-edit.html?id=${doc.id}" class="btn btn-sm btn-primary me-2" style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
     <i class="ri-edit-line"></i> Edit
   </a>
-  <a href="portfolio-list.html" class="btn btn-sm btn-success" style="border-radius: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+  <a href="portfolio-list.html" class="btn btn-sm btn-success" style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
     <i class="ri-more-fill"></i> More
   </a>
 </td>
