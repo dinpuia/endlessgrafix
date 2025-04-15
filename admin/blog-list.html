@@ -201,7 +201,7 @@
 
   let allBlogs = [];
 
-  function renderBlogs(docs) {
+ function renderBlogs(docs) {
   const container = document.getElementById("blogGrid");
   container.innerHTML = "";
   if (docs.length === 0) {
@@ -221,14 +221,15 @@
           <p><small class="text-muted">${date}</small></p>
           <div class="d-flex justify-content-center gap-2 mt-2">
             <a href="blog-edit.html?id=${doc.id}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="blog-view.html?id=${doc.id}" class="btn btn-sm btn-info">View</a>
             <button onclick="deleteBlog('${doc.id}')" class="btn btn-sm btn-danger">Delete</button>
           </div>
         </div>
       </div>
     `;
     container.innerHTML += html;
-    });
-  }
+  });
+}
 
   function fetchBlogs() {
     db.collection("blogs").orderBy("timestamp", "desc").get().then(snapshot => {
