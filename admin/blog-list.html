@@ -132,7 +132,7 @@
   <h4 class="text-center mb-4">Endless Grafix</h4>
   <a href="dashboard.html"><i class="ri-dashboard-line"></i> Dashboard</a>
   <a href="portfolio-upload.html"><i class="ri-upload-2-line"></i> Upload Portfolio</a>
-  <a href="#" class="active"><i class="ri-article-line"></i> Blog List</a>
+  <a href="blog-list.html" class="active"><i class="ri-article-line"></i> Blog List</a>
   <a href="portfolio-list.html"><i class="ri-file-list-line"></i> Portfolio List</a>
   <a href="messages.html"><i class="ri-mail-line"></i> Messages</a>
   <a href="settings.html"><i class="ri-settings-3-line"></i> Settings</a>
@@ -185,7 +185,7 @@
       const html = `
         <div class="col-md-4 mb-4" id="blog-${doc.id}">
           <div class="blog-card">
-            <img src="${d.image}" class="img-fluid mb-2" />
+            <img src="${d.image}" class="img-fluid mb-3" style="width: 100%; border-radius: 10px;" />
             <h5>${d.title}</h5>
             <p class="mb-1"><strong>Slug:</strong> ${d.slug}</p>
             <p><small class="text-muted">${date}</small></p>
