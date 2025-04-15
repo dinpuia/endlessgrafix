@@ -356,39 +356,33 @@
 
         <!-- prettier-ignore -->
 
-<div class="cards" id="portfolioList">
+   <!--work -->
+    <section class="section-work pt-120 pb-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-lg-auto">
+                <div class="text-center">
+                    <div class="btn btn-gradient d-inline-block text-uppercase">recent Work</div>
+                    <h3 class="ds-3 mt-3 mb-4 text-dark">Explore <span class="text-300">My Latest Work and Discover the</span> Craftsmanship Behind <span class="text-300">Each Design</span></h3>
+                    <p class="text-300 fs-5">
+                        Explore my latest work and discover the craftsmanship behind each design: <br />
+                        a detailed look into how I bring innovation and creativity to life
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="card-scroll mt-8">
+                <div class="cards">
+        </div> <div class="cards" id="portfolioList">
   <!-- Dynamic portfolio cards will be loaded here -->
 </div>
-
-   <!--work -->
-
-<section class="section-work pt-120 pb-150"><div class="container">
- <div class="row">
-
-        <div class="col-lg-8 mx-lg-auto">
-
-            <div class="text-center">
-
-                <div class="btn btn-gradient d-inline-block text-uppercase">recent Work</div>
-
-                <h3 class="ds-3 mt-3 mb-4 text-dark">Explore <span class="text-300">My Latest Work and Discover the</span> Craftsmanship Behind <span class="text-300">Each Design</span></h3>
-
-                <p class="text-300 fs-5">
-
-                    Explore my latest work and discover the craftsmanship behind each design: <br />
-
-                    a detailed look into how I bring innovation and creativity to life
-
-                </p>
-
-
+ </div>
             </div>
-
         </div>
-
     </div>
-
-</div>
 
 </section>
 
@@ -793,38 +787,38 @@
       snapshot.forEach(doc => {
         const data = doc.data();
         const html = `
-        <div class="card-custom" data-index="0">
-          <div class="card__inner bg-6 p-lg-6 p-md-4 p-3">
-            <div class="card__image-container zoom-img position-relative">
-              <img class="card__image" src="${data.image}" alt="${data.title}" />
-              <a href="portfolio-details.html?slug=${data.slug}" class="card-image-overlay position-absolute start-0 end-0 w-100 h-100"></a>
-            </div>
-            <div class="card__content px-md-4 px-3">
-              <div class="card__title d-md-flex align-items-center mb-0 mb-lg-2">
+      <div class="card-custom" data-index="0">
+    <div class="card__inner bg-6 p-lg-6 p-md-4 p-3">
+        <div class="card__image-container zoom-img position-relative">
+            <img class="card__image" src="${data.image}" alt="${data.title}" />
+            <a href="portfolio-details.html?slug=${data.slug}" class="card-image-overlay position-absolute start-0 end-0 w-100 h-100"></a>
+        </div>
+        <div class="card__content px-md-4 px-3">
+            <div class="card__title d-md-flex align-items-center mb-0 mb-lg-2">
                 <a href="portfolio-details.html?slug=${data.slug}" class="card_title_link">
-                  <p class="text-primary mb-0 mb-md-2">${data.category}</p>
-                  <h3 class="fw-semibold">${data.title}</h3>
+                    <p class="text-primary mb-0 mb-md-2">${data.category}</p>
+                    <h3 class="fw-semibold">${data.title}</h3>
                 </a>
                 <a href="portfolio-details.html?slug=${data.slug}" class="card-icon d-none d-md-inline-flex border text-dark border-dark icon-shape ms-auto icon-md rounded-circle">
-                  <i class="ri-arrow-right-up-line"></i>
+                    <i class="ri-arrow-right-up-line"></i>
                 </a>
-              </div>
-              <p class="text-300 mb-lg-auto mb-md-4 mb-3">${data.description}</p>
-              <div class="d-md-flex content">
+            </div>
+            <p class="text-300 mb-lg-auto mb-md-4 mb-3">${data.description}</p>
+            <div class="d-md-flex content">
                 <p class="mb-0 fs-7 text-dark text-uppercase w-40">Client</p>
                 <p class="mb-0 card__description text-300 fs-6 mb-0">${data.client}</p>
-              </div>
-              <div class="d-md-flex content">
+            </div>
+            <div class="d-md-flex content">
                 <p class="mb-0 fs-7 text-dark text-uppercase w-40">Completion Time</p>
-                <p class="mb-0 card__description text-300 fs-6 mb-0">${data.duration}</p>
-              </div>
-              <div class="d-md-flex content">
+                <p class="mb-0 card__description text-300 fs-6 mb-0">@@description2</p>
+            </div>
+            <div class="d-md-flex content">
                 <p class="mb-0 fs-7 text-dark text-uppercase w-40">Tools</p>
                 <p class="mb-0 card__description text-300 fs-6 mb-0">${data.tools}</p>
-              </div>
             </div>
-          </div>
-        </div>`;
+        </div>
+    </div>
+</div>`;
         container.innerHTML += html;
       });
     })
