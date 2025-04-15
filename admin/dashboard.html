@@ -222,10 +222,14 @@
           <td>${d.title}</td>
           <td>${d.category}</td>
           <td>${date}</td>
-          <td>
-            <a href="portfolio-edit.html?id=${doc.id}" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
-            <a href="portfolio-list.html" class="btn btn-sm btn-outline-dark">More</a>
-          </td>
+         <td>
+  <a href="portfolio-edit.html?id=${doc.id}" class="btn btn-sm btn-primary me-2" style="border-radius: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <i class="ri-edit-line"></i> Edit
+  </a>
+  <a href="portfolio-list.html" class="btn btn-sm btn-success" style="border-radius: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <i class="ri-more-fill"></i> More
+  </a>
+</td>
         </tr>`;
       tbody.innerHTML += row;
     });
