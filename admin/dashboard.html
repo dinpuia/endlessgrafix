@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="light">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,136 +6,127 @@
   <link href="../assets/css/vendors/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
   <style>
-    /* General Styling */
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
+      background-color: #f8f9fb;
+      color: #000;
     }
-
-    :root {
-      --bg-color: #f8f9fb;
-      --text-color: #000;
-      --card-bg: #fff;
-      --sidebar-bg: #1e1c1f;
-      --sidebar-text: #cfd8dc;
-    }
-
-    [data-theme="dark"] {
-      --bg-color: #121212;
-      --text-color: #fff;
-      --card-bg: #1e1e1e;
-      --sidebar-bg: #000;
-      --sidebar-text: #f0f0f0;
-    }
-
     #sidebar {
       width: 250px;
-      background-color: var(--sidebar-bg);
+      background-color: #1e1c1f;
       height: 100vh;
       position: fixed;
       top: 0;
       left: 0;
       padding-top: 30px;
-      color: var(--sidebar-text);
-      transform: translateX(0);
+      color: #cfd8dc;
+      transform: translateX(-100%);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
       z-index: 1040;
     }
-
+    #sidebar.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
     #sidebar a {
-      color: var(--sidebar-text);
+      color: #cfd8dc;
       padding: 12px 20px;
       display: block;
       text-decoration: none;
+      font-size: 16px;
+      transition: background 0.2s ease;
     }
-
     #sidebar a:hover, #sidebar .active {
       background-color: #39373d;
       color: white;
     }
-
     .main-content {
       margin-left: 250px;
       padding: 40px;
+      transition: margin-left 0.3s ease;
     }
-
     .card {
-      background-color: var(--card-bg);
+      background-color: #fff;
       border-radius: 12px;
-      padding: 1rem;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      color: #000;
     }
-
-    /* Switch Styling */
-    .ui-switch {
-      --switch-bg: rgb(135, 150, 165);
-      --switch-width: 48px;
-      --switch-height: 20px;
-      --circle-diameter: 32px;
-      --circle-bg: rgb(0, 56, 146);
-      --circle-inset: calc((var(--circle-diameter) - var(--switch-height)) / 2);
+    .sidebar-toggle {
+      display: none;
       position: fixed;
       top: 20px;
-      right: 20px;
-      z-index: 1100;
+      left: 20px;
+      font-size: 24px;
+      background: white;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      z-index: 1050;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-
-    .ui-switch input {
+    #sidebar .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 20px;
+      color: white;
+      cursor: pointer;
       display: none;
     }
 
-    .slider {
-      width: var(--switch-width);
-      height: var(--switch-height);
-      background: var(--switch-bg);
-      border-radius: 999px;
-      position: relative;
-      cursor: pointer;
-    }
+@media (min-width: 769px) {
+  #sidebar {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+  }
+  .sidebar-toggle {
+    display: none !important;
+  }
+}
 
-    .slider .circle {
-      top: calc(var(--circle-inset) * -1);
-      left: 0;
-      width: var(--circle-diameter);
-      height: var(--circle-diameter);
-      position: absolute;
-      background: var(--circle-bg);
-      border-radius: inherit;
-      background-repeat: no-repeat;
-      background-position: center center;
-      transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1), transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .ui-switch input:checked + .slider .circle {
-      left: calc(100% - var(--circle-diameter));
-    }
-
-    /* Media Query for Mobile */
     @media (max-width: 768px) {
       #sidebar {
         width: 100%;
-        height: auto;
-        position: relative;
-        padding-top: 10px;
-        z-index: 1;
+        max-width: 280px;
+        padding-top: 20px;
       }
-
+      #sidebar.show .close-btn {
+        display: block;
+      }
       .main-content {
         margin-left: 0;
-        padding: 20px;
+        padding: 80px 20px 20px 20px;
       }
-
-      .ui-switch {
-        position: absolute;
-        top: 10px;
-        right: 10px;
+      .sidebar-toggle {
+        display: block;
+      }
+      .sidebar-toggle.hide {
+        display: none;
+      }
+      .card h5, .card p {
+        font-size: 1rem;
+      }
+      .card {
+        padding: 1rem;
+      }
+      .table-responsive {
+        overflow-x: auto;
+      }
+      .table {
+        font-size: 0.875rem;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Sidebar -->
+  <div class="sidebar-toggle text-dark" id="menuToggle" onclick="toggleSidebar()">
+    <i class="ri-menu-line"></i>
+  </div>
   <div id="sidebar">
+    <div class="close-btn" onclick="toggleSidebar()">
+      <i class="ri-close-line"></i>
+    </div>
     <h4 class="text-center mb-4">Endless Grafix</h4>
     <a href="#" class="active"><i class="ri-dashboard-line"></i> Dashboard</a>
     <a href="portfolio-upload.html"><i class="ri-upload-2-line"></i> Upload Portfolio</a>
@@ -147,31 +137,121 @@
     <a href="settings.html"><i class="ri-settings-3-line"></i> Settings</a>
     <a href="#" onclick="logout()"><i class="ri-logout-box-line"></i> Logout</a>
   </div>
-
-  <!-- Main Content -->
   <div class="main-content">
-    <div class="ui-switch">
-      <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()" />
-      <div class="slider">
-        <div class="circle"></div>
+    <h2 class="mb-4">Welcome back, Admin</h2>
+<div class="row g-4 mb-4">
+  <div class="col-md-3 col-sm-6">
+    <div class="card p-4 text-white bg-primary d-flex flex-column align-items-start">
+      <div class="mb-2"><i class="ri-gallery-line fs-2"></i></div>
+      <h6>Total Portfolio</h6>
+      <h4 id="portfolioCount">0</h4>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <div class="card p-4 text-white bg-success d-flex flex-column align-items-start">
+      <div class="mb-2"><i class="ri-mail-line fs-2"></i></div>
+      <h6>Total Messages</h6>
+      <h4>--</h4>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <div class="card p-4 text-white bg-info d-flex flex-column align-items-start">
+      <div class="mb-2"><i class="ri-article-line fs-2"></i></div>
+      <h6>Blog Posts</h6>
+      <h4>--</h4>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <div class="card p-4 text-white bg-dark d-flex flex-column align-items-start">
+      <div class="mb-2"><i class="ri-server-line fs-2"></i></div>
+      <h6>Storage Used</h6>
+      <h4>--</h4>
+    </div>
+  </div>
+</div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3 margin-top: 20px; ai-style-change-1">
+      <h4>Recent Portfolio Uploads</h4>
+      <a href="portfolio-upload.html" class="btn btn-primary">+ Add New</a>
+    </div>
+    <div class="card p-3">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="dashboard-projects">
+            <tr><td colspan="5">Loading latest projects...</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    <h2>Welcome back, Admin</h2>
-    <!-- Cards and content go here -->
   </div>
-
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
   <script>
-    function toggleDarkMode() {
-      const html = document.documentElement;
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      html.setAttribute('data-theme', newTheme);
+    const firebaseConfig = {
+      apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
+      authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
+      projectId: "endless-grafix-admin-5fff7"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();db.collection("portfolio").orderBy("timestamp", "desc").limit(6).get()
+  .then(snapshot => {
+    const tbody = document.getElementById("dashboard-projects");
+    tbody.innerHTML = "";
+    document.getElementById("portfolioCount").innerText = snapshot.size;
+    if (snapshot.empty) {
+      tbody.innerHTML = `<tr><td colspan="5">No projects found.</td></tr>`;
+      return;
     }
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      const date = d.timestamp?.toDate().toLocaleDateString() || "-";
+      const row = `
+        <tr>
+          <td><img src="${d.image}" height="40" /></td>
+          <td>${d.title}</td>
+          <td>${d.category}</td>
+          <td>${date}</td>
+          <td>
+            <a href="portfolio-edit.html?id=${doc.id}" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
+            <a href="portfolio-list.html" class="btn btn-sm btn-outline-dark">More</a>
+          </td>
+        </tr>`;
+      tbody.innerHTML += row;
+    });
+  })
+  .catch(error => {
+    document.getElementById("dashboard-projects").innerHTML =
+      `<tr><td colspan="5" class="text-danger">Failed to load projects.</td></tr>`;
+    console.error("Firestore error:", error);
+  });
 
-    function logout() {
-      alert('Logging out...');
-      // Add logout functionality here
-    }
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const menuToggle = document.getElementById('menuToggle');
+  sidebar.classList.toggle('show');
+  menuToggle.classList.toggle('hide');
+}
+
+function logout() {
+  auth.signOut().then(() => {
+    alert("Logged out successfully.");
+    window.location.href = "login.html";
+  }).catch((error) => {
+    alert("Logout failed: " + error.message);
+  });
+}
+
   </script>
 </body>
 </html>
