@@ -35,14 +35,18 @@
       left: 0;
       padding-top: 30px;
       color: var(--sidebar-text);
-      transform: translateX(-100%);
-      opacity: 0;
+      transform: translateX(0); /* Sidebar always visible on desktop */
+      opacity: 1;
       transition: transform 0.3s ease, opacity 0.3s ease;
       z-index: 1040;
     }
-    #sidebar.show {
-      transform: translateX(0);
-      opacity: 1;
+    #sidebar .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px; /* Close button on the right side */
+      font-size: 20px;
+      color: white;
+      cursor: pointer;
     }
     #sidebar a {
       color: var(--sidebar-text);
@@ -53,14 +57,6 @@
     #sidebar a:hover, #sidebar .active {
       background-color: #39373d;
       color: white;
-    }
-    #sidebar .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 20px;
-      color: white;
-      cursor: pointer;
     }
     .sidebar-toggle {
       display: none;
@@ -102,21 +98,14 @@
       border-radius: 6px;
       margin-bottom: 1rem;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 991px) {
       #sidebar {
-        width: 100%;
-        max-width: 280px;
+        transform: translateX(-100%);
+        opacity: 0;
       }
       .main-content {
         margin-left: 0;
         padding: 20px;
-      }
-      .blog-card {
-        margin-bottom: 20px;
-        border-radius: 8px;
-      }
-      .blog-card img {
-        max-height: 150px;
       }
       .sidebar-toggle {
         display: block;
