@@ -95,19 +95,49 @@
   margin-bottom: 1rem; /* Adds space below the image */
 }
     }
-    @media (max-width: 768px) {
-      #sidebar {
-        width: 100%;
-        max-width: 280px;
-      }
-      .main-content {
-        margin-left: 0;
-        padding: 80px 20px;
-      }
-      .sidebar-toggle {
-        display: block;
-      }
-    }
+
+/* Blog card image for larger size and responsive layout */
+
+
+.blog-card img {
+  width: 100%; /* Ensures the image takes the full width of the card */
+  max-height: 200px; /* Increases the height for more visibility */
+  object-fit: cover; /* Ensures the image maintains its aspect ratio */
+  border-radius: 6px; /* Rounded corners for a modern look */
+  margin-bottom: 1rem; /* Adds space below the image */
+}
+
+/* Adjusting the layout for mobile views */
+@media (max-width: 768px) {
+  #sidebar {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .blog-card {
+    margin-bottom: 20px; /* Adds spacing between cards */
+    border-radius: 8px; /* Reduces the border radius for a cleaner look */
+  }
+
+  .blog-card img {
+    max-height: 150px; /* Reduces the height of the images for smaller screens */
+  }
+
+  .card h5, .card p {
+    font-size: 0.9rem; /* Adjusts text size for better readability */
+  }
+
+  .sidebar-toggle {
+    display: block; /* Ensure the toggle button is visible */
+  }
+}
+
+
     @media (min-width: 769px) {
       #sidebar {
         transform: translateX(0) !important;
