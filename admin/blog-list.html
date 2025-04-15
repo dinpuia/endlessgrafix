@@ -141,7 +141,15 @@
     <h2>Blog Posts</h2>
     <input type="text" class="form-control w-50" id="searchInput" placeholder="Search by title or slug...">
   </div>
-
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="mb-0">All Blog Posts</h4>
+  <a href="blog-create.html" class="btn btn-primary">
+    <i class="ri-add-line"></i> Create New Blog
+  </a>
+</div>
+<a href="blog-upload.html" class="btn btn-primary position-fixed bottom-0 end-0 m-4 shadow rounded-circle" style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; z-index: 1000;">
+  <i class="ri-add-line fs-4"></i>
+</a>
   <div class="row" id="blogGrid">
     <!-- Blogs will render here -->
   </div>
