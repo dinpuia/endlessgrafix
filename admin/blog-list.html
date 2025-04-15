@@ -88,9 +88,12 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
     .blog-card img {
-      max-height: 120px;
-      object-fit: cover;
-      border-radius: 6px;
+  width: 100%; /* Ensures the image takes the full width of the card */
+  max-height: 180px; /* Increases the height of the image */
+  object-fit: cover; /* Ensures the image maintains its aspect ratio */
+  border-radius: 6px;
+  margin-bottom: 1rem; /* Adds space below the image */
+}
     }
     @media (max-width: 768px) {
       #sidebar {
