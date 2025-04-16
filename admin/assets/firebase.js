@@ -52,12 +52,62 @@
     });
   }
 
-  // Delete blog
+// Blod Edit.html
+ let allBlogs = [];
+
+  function renderBlogs(docs) {
+    const container = document.getElementById("blogGrid");
+    container.innerHTML = "";
+    if (docs.length === 0) {
+      container.innerHTML = `<p class="text-muted">No blog posts found.</p>`;
+      return;
+    }
+
+    docs.forEach(doc => {
+      const d = doc.data();
+      const date = d.timestamp?.toDate().toLocaleDateString() || '';
+      const html = `
+        <div class="col-md-4 mb-4" id="blog-${doc.id}">
+          <div class="blog-card">
+            <img src="${d.image}" class="img-fluid mb-3" />
+            <h5>${d.title}</h5>
+            <p class="mb-1"><strong>Slug:</strong> ${d.slug}</p>
+            <p><small class="text-muted">${date}</small></p>
+            <div class="d-flex justify-content-center gap-2 mt-2">
+              <a href="blog-edit.html?id=${doc.id}" class="btn btn-sm btn-primary">Edit</a>
+              <a href="blog-view.html?id=${doc.id}" class="btn btn-sm btn-info">View</a>
+              <button onclick="deleteBlog('${doc.id}')" class="btn btn-sm btn-danger">Delete</button>
+            </div>
+          </div>
+        </div>
+      `;
+      container.innerHTML += html;
+    });
+  }
+
+  function fetchBlogs() {
+    db.collection("blogs").orderBy("timestamp", "desc").get().then(snapshot => {
+      allBlogs = snapshot.docs;
+      renderBlogs(allBlogs);
+    });
+  }
+
   function deleteBlog(id) {
     if (!confirm("Are you sure you want to delete this blog post?")) return;
     db.collection("blogs").doc(id).delete().then(() => {
       document.getElementById(`blog-${id}`)?.remove();
     }).catch(err => alert("Delete failed: " + err.message));
+  }
+
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const menuToggle = document.getElementById('menuToggle');
+    sidebar.classList.toggle('show');
+    if (sidebar.classList.contains('show')) {
+      menuToggle.style.display = 'none';
+    } else {
+      menuToggle.style.display = 'block';
+    }
   }
 
   // Search blog by title or slug
