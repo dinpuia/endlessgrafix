@@ -145,82 +145,16 @@
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyDeXPI59Y1t3EqcS11_05Qyc-i16o5iriQ",
-    authDomain: "endless-grafix-admin-5fff7.firebaseapp.com",
-    projectId: "endless-grafix-admin-5fff7"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
 
-  const quill = new Quill('#editor', { theme: 'snow' });
-  const id = new URLSearchParams(window.location.search).get("id");
-  if (!id) location.href = "blog-list.html";
 
-  const docRef = db.collection("blogs").doc(id);
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 
-  async function loadBlog() {
-    const doc = await docRef.get();
-    if (!doc.exists) return alert("Blog not found");
+  <!-- Firebase Config + Firestore logic -->
+  <script src="admin/firebase.js"></script>
 
-    const d = doc.data();
-    document.getElementById("title").value = d.title;
-    document.getElementById("slug").value = d.slug;
-    document.getElementById("previewImage").src = d.image;
-    quill.root.innerHTML = d.content;
-  }
-
-  loadBlog();
-
-  document.getElementById("editBlogForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const title = document.getElementById("title").value;
-    const slug = document.getElementById("slug").value;
-    const content = quill.root.innerHTML;
-    const file = document.getElementById("image").files[0];
-
-    let imageURL = document.getElementById("previewImage").src;
-
-    if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", "portfolio_unsigned");
-
-      const res = await fetch("https://api.cloudinary.com/v1_1/dinpui98/image/upload", {
-        method: "POST",
-        body: formData
-      });
-
-      const data = await res.json();
-      if (!data.secure_url) return alert("Image upload failed");
-      imageURL = data.secure_url;
-      document.getElementById("previewImage").src = imageURL;
-    }
-
-    await docRef.update({
-      title,
-      slug,
-      content,
-      image: imageURL
-    });
-
-    alert("Blog updated!");
-    window.location.href = "blog-list.html";
-  });
-
-  function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('show');
-    document.getElementById('menuToggle').classList.toggle('hide');
-  }
-
-  function logout() {
-    alert("Logged out");
-    window.location.href = "login.html";
-  }
-</script>
 </body>
 </html>
