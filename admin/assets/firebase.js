@@ -51,63 +51,69 @@
     });
   }
 
-// Blod Edit.html
- let allBlogs = [];
+// Blog Edit.html
 
-  function renderBlogs(docs) {
-    const container = document.getElementById("blogGrid");
-    container.innerHTML = "";
-    if (docs.length === 0) {
-      container.innerHTML = `<p class="text-muted">No blog posts found.</p>`;
-      return;
+ const quill = new Quill('#editor', { theme: 'snow' });
+  const id = new URLSearchParams(window.location.search).get("id");
+  if (!id) location.href = "blog-list.html";
+
+  const docRef = db.collection("blogs").doc(id);
+
+  async function loadBlog() {
+    const doc = await docRef.get();
+    if (!doc.exists) return alert("Blog not found");
+
+    const d = doc.data();
+    document.getElementById("title").value = d.title;
+    document.getElementById("slug").value = d.slug;
+    document.getElementById("previewImage").src = d.image;
+    quill.root.innerHTML = d.content;
+  }
+
+  loadBlog();
+
+  document.getElementById("editBlogForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("title").value;
+    const slug = document.getElementById("slug").value;
+    const content = quill.root.innerHTML;
+    const file = document.getElementById("image").files[0];
+
+    let imageURL = document.getElementById("previewImage").src;
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "portfolio_unsigned");
+
+      const res = await fetch("https://api.cloudinary.com/v1_1/dinpui98/image/upload", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+      if (!data.secure_url) return alert("Image upload failed");
+      imageURL = data.secure_url;
+      document.getElementById("previewImage").src = imageURL;
     }
 
-    docs.forEach(doc => {
-      const d = doc.data();
-      const date = d.timestamp?.toDate().toLocaleDateString() || '';
-      const html = `
-        <div class="col-md-4 mb-4" id="blog-${doc.id}">
-          <div class="blog-card">
-            <img src="${d.image}" class="img-fluid mb-3" />
-            <h5>${d.title}</h5>
-            <p class="mb-1"><strong>Slug:</strong> ${d.slug}</p>
-            <p><small class="text-muted">${date}</small></p>
-            <div class="d-flex justify-content-center gap-2 mt-2">
-              <a href="blog-edit.html?id=${doc.id}" class="btn btn-sm btn-primary">Edit</a>
-              <a href="blog-view.html?id=${doc.id}" class="btn btn-sm btn-info">View</a>
-              <button onclick="deleteBlog('${doc.id}')" class="btn btn-sm btn-danger">Delete</button>
-            </div>
-          </div>
-        </div>
-      `;
-      container.innerHTML += html;
+    await docRef.update({
+      title,
+      slug,
+      content,
+      image: imageURL
     });
-  }
 
-  function fetchBlogs() {
-    db.collection("blogs").orderBy("timestamp", "desc").get().then(snapshot => {
-      allBlogs = snapshot.docs;
-      renderBlogs(allBlogs);
-    });
-  }
-
-  function deleteBlog(id) {
-    if (!confirm("Are you sure you want to delete this blog post?")) return;
-    db.collection("blogs").doc(id).delete().then(() => {
-      document.getElementById(`blog-${id}`)?.remove();
-    }).catch(err => alert("Delete failed: " + err.message));
-  }
+    alert("Blog updated!");
+    window.location.href = "blog-list.html";
+  });
 
   function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const menuToggle = document.getElementById('menuToggle');
-    sidebar.classList.toggle('show');
-    if (sidebar.classList.contains('show')) {
-      menuToggle.style.display = 'none';
-    } else {
-      menuToggle.style.display = 'block';
-    }
+    document.getElementById('sidebar').classList.toggle('show');
+    document.getElementById('menuToggle').classList.toggle('hide');
   }
+
+
 
   // Search blog by title or slug
   document.getElementById("searchInput")?.addEventListener("input", function () {
